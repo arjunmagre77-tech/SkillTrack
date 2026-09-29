@@ -20,6 +20,9 @@ import {
 } from '../data/mockData';
 
 interface AppContextType {
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
   isAuthenticated: boolean;
   currentUser: AuthUser | null;
   login: (email: string, role: UserRole, name?: string) => void;
@@ -53,6 +56,10 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+
+  const toggleSidebar = () => setSidebarOpen(prev => !prev);
+
   // Load auth from localStorage or default to logged-in Admin for smooth access
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     const saved = localStorage.getItem('skilltrack_auth');
@@ -64,7 +71,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return saved ? JSON.parse(saved).user : {
       id: 'USR-001',
       name: 'Dr. Rajesh Deshmukh',
-      email: 'admin@skilltrack360.gov.in',
+      email: 'admin@skilltrack.gov.in',
       role: 'ADMIN',
       organization: 'Ministry of Skill Development & Entrepreneurship'
     };
@@ -182,6 +189,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   return (
     <AppContext.Provider value={{
+      sidebarOpen,
+      setSidebarOpen,
+      toggleSidebar,
       isAuthenticated,
       currentUser,
       login,

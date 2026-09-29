@@ -17,7 +17,7 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [selectedRole, setSelectedRole] = useState<UserRole>('ADMIN');
-  const [email, setEmail] = useState('admin@skilltrack360.gov.in');
+  const [email, setEmail] = useState('admin@skilltrack.gov.in');
   const [password, setPassword] = useState('••••••••••••');
   const [rememberMe, setRememberMe] = useState(true);
 
@@ -39,7 +39,7 @@ export const LoginPage: React.FC = () => {
     { 
       role: 'ADMIN', 
       title: 'Program Admin', 
-      email: 'admin@skilltrack360.gov.in', 
+      email: 'admin@skilltrack.gov.in', 
       name: 'Dr. Rajesh Deshmukh',
       icon: <ShieldCheck className="w-5 h-5 text-emerald-600" />,
       desc: 'State & Central Ministry Policy Analytics' 
@@ -80,11 +80,11 @@ export const LoginPage: React.FC = () => {
         {/* Brand Header */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-3 bg-gov-950/80 border border-gov-800 px-4 py-2 rounded-2xl shadow-lg">
-            <div className="w-10 h-10 rounded-xl bg-gov-900 text-teal-400 flex items-center justify-center font-extrabold text-xl border border-gov-800">
-              360
+            <div className="w-10 h-10 rounded-xl bg-gov-900 text-teal-400 flex items-center justify-center font-black text-xl border border-gov-800">
+              ST
             </div>
             <div className="text-left">
-              <h1 className="text-xl font-black text-white tracking-tight">SkillTrack 360</h1>
+              <h1 className="text-xl font-black text-white tracking-tight">SkillTrack</h1>
               <p className="text-[11px] text-slate-400 font-medium">Outcome Intelligence & Longitudinal Tracking</p>
             </div>
           </div>

@@ -64,9 +64,9 @@ export const OverviewPage: React.FC = () => {
 
           <div className="space-y-2">
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white">
-              SkillTrack <span className="text-teal-400">360</span>
+              SkillTrack
             </h1>
-            <p className="text-xl md:text-2xl font-semibold text-slate-300 tracking-wide">
+            <p className="text-xl md:text-2xl font-semibold text-teal-300 tracking-wide">
               “From Training to Sustainable Employment”
             </p>
           </div>
@@ -108,7 +108,7 @@ export const OverviewPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-extrabold text-gov-900">The Longitudinal Trainee Journey</h2>
-            <p className="text-xs text-slate-500">SkillTrack 360 extends beyond course completion into 12-month post-placement outcomes</p>
+            <p className="text-xs text-slate-500">SkillTrack extends beyond course completion into 12-month post-placement outcomes</p>
           </div>
           <span className="text-xs bg-slate-100 text-gov-800 px-3 py-1 rounded-full font-medium border border-slate-200">
             End-to-End Traceability

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 import { FUNNEL_DATA, WAGE_PROGRESSION_TREND, UNEMPLOYMENT_REASONS_AGGREGATED } from '../data/mockData';
 import { 
   BarChart3, 
@@ -27,7 +28,8 @@ import {
 } from 'recharts';
 
 export const ProgramImpactDashboardPage: React.FC = () => {
-  const { districts, providers, programs, selectedDistrict, setSelectedDistrict, setActiveTab } = useApp();
+  const { districts, providers, programs, selectedDistrict, setSelectedDistrict } = useApp();
+  const navigate = useNavigate();
 
   // Filters State
   const [filterState, setFilterState] = useState('Maharashtra');
@@ -39,113 +41,57 @@ export const ProgramImpactDashboardPage: React.FC = () => {
   const currentDistrictObj = districts.find(d => d.district === selectedDistrict) || districts[0];
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* HEADER & FILTERS BAR */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+    <div className="space-y-6 pb-12">
+
+      {/* HERO HEADER — PROGRAM IMPACT DASHBOARD (distinct from Trainee Dashboard) */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-950 via-indigo-950 to-slate-900 text-white p-6 shadow-xl border border-blue-900/50">
+        <div className="absolute -right-10 -top-10 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute left-1/2 -bottom-10 w-64 h-64 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-extrabold text-gov-900">Program Impact Dashboard</h1>
-              <span className="text-xs font-semibold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded border border-blue-200">
-                Dashboard 2 • Government & Policy Intelligence
-              </span>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-7 h-7 rounded-lg bg-blue-500/30 border border-blue-400/40 flex items-center justify-center">
+                <BarChart3 className="w-3.5 h-3.5 text-blue-300" />
+              </div>
+              <span className="text-[10px] font-bold text-blue-300 uppercase tracking-widest">Government & Policy Intelligence</span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Macro skilling outcome evaluation: Employment conversion, sustained retention, wage growth & provider performance.
+            <h1 className="text-2xl font-black text-white tracking-tight">Program Impact Dashboard</h1>
+            <p className="text-xs text-blue-200/70 mt-0.5">
+              Macro skilling outcome evaluation • Employment conversion • Retention & wage growth • Provider performance
             </p>
           </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500">Active Jurisdiction:</span>
-            <span className="text-xs font-bold bg-gov-900 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-xs">
-              <MapPin className="w-3.5 h-3.5 text-teal-400" />
-              <span>{filterState} (State Level)</span>
+          <div className="flex items-center gap-2 shrink-0">
+            <MapPin className="w-3.5 h-3.5 text-blue-300" />
+            <span className="text-xs font-bold text-blue-200">Active Jurisdiction: </span>
+            <span className="text-xs font-extrabold bg-white/15 backdrop-blur-sm border border-white/20 text-white px-3 py-1.5 rounded-lg">
+              {filterState} (State Level)
             </span>
           </div>
         </div>
 
-        {/* Filters Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-xs">
-          <div>
-            <label className="block text-[11px] font-bold text-slate-500 mb-1">State / Region</label>
-            <select 
-              value={filterState} 
-              onChange={e => setFilterState(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold text-slate-800 focus:ring-2 focus:ring-gov-600 focus:outline-none"
-            >
-              <option value="Maharashtra">Maharashtra</option>
-              <option value="National">National Aggregate</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-bold text-slate-500 mb-1">District</label>
-            <select 
-              value={selectedDistrict} 
-              onChange={e => setSelectedDistrict(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold text-slate-800 focus:ring-2 focus:ring-gov-600 focus:outline-none"
-            >
-              <option value="ALL">All Districts</option>
-              {districts.map(d => (
-                <option key={d.district} value={d.district}>{d.district}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-bold text-slate-500 mb-1">Training Provider</label>
-            <select 
-              value={filterProvider} 
-              onChange={e => setFilterProvider(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold text-slate-800 focus:ring-2 focus:ring-gov-600 focus:outline-none"
-            >
-              <option value="ALL">All Providers</option>
-              {providers.map(p => (
-                <option key={p.id} value={p.id}>{p.name.split(' ')[0]}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-bold text-slate-500 mb-1">Course Sector</label>
-            <select 
-              value={filterCourse} 
-              onChange={e => setFilterCourse(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold text-slate-800 focus:ring-2 focus:ring-gov-600 focus:outline-none"
-            >
-              <option value="ALL">All Sectors</option>
-              {programs.map(pr => (
-                <option key={pr.id} value={pr.id}>{pr.title.split(' ')[0]}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-bold text-slate-500 mb-1">Gender Group</label>
-            <select 
-              value={filterGender} 
-              onChange={e => setFilterGender(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold text-slate-800 focus:ring-2 focus:ring-gov-600 focus:outline-none"
-            >
-              <option value="ALL">All Genders</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-bold text-slate-500 mb-1">Outcome Status</label>
-            <select 
-              value={filterStatus} 
-              onChange={e => setFilterStatus(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold text-slate-800 focus:ring-2 focus:ring-gov-600 focus:outline-none"
-            >
-              <option value="ALL">All Statuses</option>
-              <option value="Employed">Employed</option>
-              <option value="Retained">6M Retained</option>
-              <option value="Self-Employed">Self-Employed</option>
-            </select>
-          </div>
+        {/* Filters built into header */}
+        <div className="relative z-10 mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-xs border-t border-white/10 pt-5">
+          {[
+            { label: 'State / Region', value: filterState, onChange: setFilterState, opts: [{ v: 'Maharashtra', l: 'Maharashtra' }, { v: 'National', l: 'National Aggregate' }] },
+            { label: 'District', value: selectedDistrict, onChange: setSelectedDistrict, opts: [{ v: 'ALL', l: 'All Districts' }, ...districts.map(d => ({ v: d.district, l: d.district }))] },
+            { label: 'Training Provider', value: filterProvider, onChange: setFilterProvider, opts: [{ v: 'ALL', l: 'All Providers' }, ...providers.map(p => ({ v: p.id, l: p.name.split(' ')[0] }))] },
+            { label: 'Course Sector', value: filterCourse, onChange: setFilterCourse, opts: [{ v: 'ALL', l: 'All Sectors' }, ...programs.map(pr => ({ v: pr.id, l: pr.title.split(' ')[0] }))] },
+            { label: 'Gender Group', value: filterGender, onChange: setFilterGender, opts: [{ v: 'ALL', l: 'All Genders' }, { v: 'Male', l: 'Male' }, { v: 'Female', l: 'Female' }] },
+            { label: 'Outcome Status', value: filterStatus, onChange: setFilterStatus, opts: [{ v: 'ALL', l: 'All Statuses' }, { v: 'Employed', l: 'Employed' }, { v: 'Retained', l: '6M Retained' }, { v: 'Self-Employed', l: 'Self-Employed' }] },
+          ].map((f, i) => (
+            <div key={i}>
+              <label className="block text-[10px] font-bold text-blue-300 mb-1 uppercase tracking-wider">{f.label}</label>
+              <select
+                value={f.value}
+                onChange={e => f.onChange(e.target.value)}
+                className="w-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-[11px] font-semibold rounded-lg p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              >
+                {f.opts.map(o => (
+                  <option key={o.v} value={o.v} className="bg-slate-900 text-white">{o.l}</option>
+                ))}
+              </select>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -363,7 +309,7 @@ export const ProgramImpactDashboardPage: React.FC = () => {
             <p className="text-xs text-slate-500">Root-cause breakdown across non-employed candidates for targeted policy intervention</p>
           </div>
           <button 
-            onClick={() => setActiveTab('early-warning')}
+            onClick={() => navigate('/early-warning')}
             className="text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-lg hover:bg-amber-100 transition"
           >
             Launch Early Interventions →

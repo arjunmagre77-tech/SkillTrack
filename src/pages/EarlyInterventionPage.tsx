@@ -1,9 +1,11 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, Sparkles } from 'lucide-react';
 
 export const EarlyInterventionPage: React.FC = () => {
-  const { trainees, addIntervention, setSelectedTraineeId, setActiveTab } = useApp();
+  const { trainees, addIntervention, setSelectedTraineeId } = useApp();
+  const navigate = useNavigate();
 
   const atRiskTrainees = trainees.filter(t => t.earlyWarning.isAtRisk);
 
@@ -76,7 +78,7 @@ export const EarlyInterventionPage: React.FC = () => {
                 <button
                   onClick={() => {
                     setSelectedTraineeId(t.id);
-                    setActiveTab('trainee-dashboard');
+                    navigate('/trainee-dashboard');
                   }}
                   className="text-xs font-bold text-teal-700 hover:text-teal-900 underline"
                 >

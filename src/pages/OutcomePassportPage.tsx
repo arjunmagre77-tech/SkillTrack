@@ -59,7 +59,7 @@ export const OutcomePassportPage: React.FC = () => {
         <div className="border-b-2 border-gov-900 pb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gov-950 text-teal-400 flex items-center justify-center font-extrabold text-2xl border border-gov-800">
-              360
+              ST
             </div>
             <div>
               <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
@@ -67,7 +67,7 @@ export const OutcomePassportPage: React.FC = () => {
               </div>
               <h2 className="text-2xl font-black text-gov-950 tracking-tight">DIGITAL OUTCOME PASSPORT</h2>
               <span className="text-[10px] text-teal-700 font-mono font-bold">
-                Credential ID: ST360-PASSPORT-2026-MSDE-9942
+                Credential ID: ST-PASSPORT-2026-MSDE-9942
               </span>
             </div>
           </div>
@@ -154,7 +154,7 @@ export const OutcomePassportPage: React.FC = () => {
               <span className="font-extrabold text-gov-900 block">Skill Growth Index: <strong className="text-teal-700">+37%</strong></span>
               <span className="font-extrabold text-gov-900 block">Training-to-Job Relevance: <strong className="text-blue-700">High (88%)</strong></span>
               <p className="text-[11px] text-slate-500 max-w-md">
-                Verified via SkillTrack 360 multi-source API integration (Employer Payroll, EPFO/UAN & Assessment Center).
+                Verified via SkillTrack multi-source API integration (Employer Payroll, EPFO/UAN & Assessment Center).
               </p>
             </div>
           </div>

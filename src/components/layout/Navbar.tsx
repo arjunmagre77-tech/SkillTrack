@@ -11,7 +11,9 @@ import {
   ChevronDown,
   Layers,
   Database,
-  LogOut
+  LogOut,
+  PanelLeft,
+  Menu
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -23,7 +25,9 @@ export const Navbar: React.FC = () => {
     setSearchQuery,
     anomalies,
     currentUser,
-    logout
+    logout,
+    sidebarOpen,
+    toggleSidebar
   } = useApp();
 
   const navigate = useNavigate();
@@ -44,23 +48,34 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-30 flex items-center justify-between px-4 md:px-6 shadow-sm">
-      {/* Brand Logo */}
-      <Link to="/" className="flex items-center gap-3 group">
-        <div className="w-10 h-10 rounded-lg bg-gov-900 text-white flex items-center justify-center font-bold text-xl shadow-md border border-gov-800 group-hover:bg-gov-800 transition">
-          <span className="text-teal-400">360</span>
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-base font-extrabold text-gov-900 tracking-tight">SkillTrack 360</h1>
-            <span className="text-[10px] font-bold bg-gov-100 text-gov-900 px-2 py-0.5 rounded-full border border-gov-200">
-              State Skill Mission
-            </span>
+      {/* Sidebar Toggle & Brand Logo */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={toggleSidebar}
+          className="p-2 text-slate-600 hover:text-gov-900 hover:bg-slate-100 rounded-lg transition cursor-pointer"
+          title={sidebarOpen ? "Collapse Navigation Sidebar" : "Expand Navigation Sidebar"}
+          aria-label="Toggle Sidebar Navigation"
+        >
+          {sidebarOpen ? <PanelLeft className="w-5 h-5 text-gov-800" /> : <Menu className="w-5 h-5 text-gov-800" />}
+        </button>
+
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-lg bg-gov-900 text-white flex items-center justify-center font-black text-lg shadow-md border border-gov-800 group-hover:bg-gov-800 transition">
+            <span className="text-teal-400">ST</span>
           </div>
-          <p className="text-xs text-slate-500 font-medium hidden sm:block">
-            Outcome Intelligence Platform • From Training to Sustainable Employment
-          </p>
-        </div>
-      </Link>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-extrabold text-gov-900 tracking-tight">SkillTrack</h1>
+              <span className="text-[10px] font-bold bg-gov-100 text-gov-900 px-2 py-0.5 rounded-full border border-gov-200">
+                State Skill Mission
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 font-medium hidden sm:block">
+              Outcome Intelligence Platform • From Training to Sustainable Employment
+            </p>
+          </div>
+        </Link>
+      </div>
 
       {/* Global Search */}
       <div className="hidden lg:flex items-center relative w-72">

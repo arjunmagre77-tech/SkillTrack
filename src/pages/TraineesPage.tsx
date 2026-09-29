@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 import { Search, CheckCircle2, Eye } from 'lucide-react';
 
 export const TraineesPage: React.FC = () => {
-  const { trainees, setSelectedTraineeId, setActiveTab } = useApp();
+  const { trainees, setSelectedTraineeId } = useApp();
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [districtFilter, setDistrictFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -123,7 +125,7 @@ export const TraineesPage: React.FC = () => {
                     <button
                       onClick={() => {
                         setSelectedTraineeId(t.id);
-                        setActiveTab('trainee-dashboard');
+                        navigate('/trainee-dashboard');
                       }}
                       className="px-2.5 py-1 bg-gov-900 hover:bg-gov-800 text-teal-300 text-[11px] font-bold rounded flex items-center gap-1 transition cursor-pointer"
                     >
