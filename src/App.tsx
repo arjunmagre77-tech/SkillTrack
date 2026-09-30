@@ -1,13 +1,26 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
-import { Navbar } from './components/layout/Navbar';
-import { Sidebar } from './components/layout/Sidebar';
-import { Toast } from './components/common/Toast';
+
+import { TraineeDashboardLayout } from './components/layout/TraineeDashboardLayout';
+import { GovernmentDashboardLayout } from './components/layout/GovernmentDashboardLayout';
 
 import { LoginPage } from './pages/LoginPage';
-import { OverviewPage } from './pages/OverviewPage';
+
+// Trainee Pages
 import { TraineeDashboardPage } from './pages/TraineeDashboardPage';
+import { TraineeProfilePage } from './pages/trainee/TraineeProfilePage';
+import { TraineeSkillsPage } from './pages/trainee/TraineeSkillsPage';
+import { TraineeSkillGapPage } from './pages/trainee/TraineeSkillGapPage';
+import { TraineeRoadmapPage } from './pages/trainee/TraineeRoadmapPage';
+import { TraineeTrainingPage } from './pages/trainee/TraineeTrainingPage';
+import { TraineeJobsPage } from './pages/trainee/TraineeJobsPage';
+import { TraineeApplicationsPage } from './pages/trainee/TraineeApplicationsPage';
+import { TraineeOutcomesPage } from './pages/trainee/TraineeOutcomesPage';
+import { TraineeFollowupsPage } from './pages/trainee/TraineeFollowupsPage';
+
+// Government Pages
+import { GovernmentOverviewPage } from './pages/government/GovernmentOverviewPage';
 import { ProgramImpactDashboardPage } from './pages/ProgramImpactDashboardPage';
 import { TraineesPage } from './pages/TraineesPage';
 import { TrainingProgramsPage } from './pages/TrainingProgramsPage';
@@ -24,27 +37,13 @@ import { ReportsPage } from './pages/ReportsPage';
 import { ConsentPrivacyPage } from './pages/ConsentPrivacyPage';
 import { SettingsPage } from './pages/SettingsPage';
 
-// Protected Route Guard
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useApp();
-  const location = useLocation();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+// Root Redirect Component based on User Role
+const RootRedirect: React.FC = () => {
+  const { selectedRole } = useApp();
+  if (selectedRole === 'TRAINEE') {
+    return <Navigate to="/dashboard/trainee" replace />;
   }
-
-  return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-900 selection:bg-teal-100 selection:text-teal-900">
-      <Navbar />
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8">
-          {children}
-        </main>
-      </div>
-      <Toast />
-    </div>
-  );
+  return <Navigate to="/dashboard/government" replace />;
 };
 
 export function App() {
@@ -55,27 +54,62 @@ export function App() {
           {/* Public Authentication Route */}
           <Route path="/login" element={<LoginPage />} />
 
-          {/* Authenticated Dashboard Routes */}
-          <Route path="/" element={<ProtectedRoute><OverviewPage /></ProtectedRoute>} />
-          <Route path="/trainee-dashboard" element={<ProtectedRoute><TraineeDashboardPage /></ProtectedRoute>} />
-          <Route path="/program-impact" element={<ProtectedRoute><ProgramImpactDashboardPage /></ProtectedRoute>} />
-          <Route path="/trainees" element={<ProtectedRoute><TraineesPage /></ProtectedRoute>} />
-          <Route path="/programs" element={<ProtectedRoute><TrainingProgramsPage /></ProtectedRoute>} />
-          <Route path="/employment-outcomes" element={<ProtectedRoute><EmploymentOutcomesPage /></ProtectedRoute>} />
-          <Route path="/skill-gaps" element={<ProtectedRoute><SkillGapsPage /></ProtectedRoute>} />
-          <Route path="/providers" element={<ProtectedRoute><ProvidersPage /></ProtectedRoute>} />
-          <Route path="/district-insights" element={<ProtectedRoute><DistrictInsightsPage /></ProtectedRoute>} />
-          <Route path="/outcome-passport" element={<ProtectedRoute><OutcomePassportPage /></ProtectedRoute>} />
-          <Route path="/followups" element={<ProtectedRoute><FollowupsPage /></ProtectedRoute>} />
-          <Route path="/anomalies" element={<ProtectedRoute><AnomalyCenterPage /></ProtectedRoute>} />
-          <Route path="/early-warning" element={<ProtectedRoute><EarlyInterventionPage /></ProtectedRoute>} />
-          <Route path="/program-roi" element={<ProtectedRoute><ProgramROIInvestmentPage /></ProtectedRoute>} />
-          <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
-          <Route path="/consent-privacy" element={<ProtectedRoute><ConsentPrivacyPage /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          {/* DASHBOARD 1 — TRAINEE / CANDIDATE DASHBOARD ROUTE GROUP */}
+          <Route path="/dashboard/trainee" element={<TraineeDashboardLayout />}>
+            <Route index element={<TraineeDashboardPage />} />
+            <Route path="profile" element={<TraineeProfilePage />} />
+            <Route path="skills" element={<TraineeSkillsPage />} />
+            <Route path="skill-gap" element={<TraineeSkillGapPage />} />
+            <Route path="roadmap" element={<TraineeRoadmapPage />} />
+            <Route path="training" element={<TraineeTrainingPage />} />
+            <Route path="jobs" element={<TraineeJobsPage />} />
+            <Route path="applications" element={<TraineeApplicationsPage />} />
+            <Route path="outcomes" element={<TraineeOutcomesPage />} />
+            <Route path="passport" element={<OutcomePassportPage />} />
+            <Route path="follow-ups" element={<TraineeFollowupsPage />} />
+          </Route>
 
-          {/* Fallback Redirect */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* DASHBOARD 2 — GOVERNMENT / PROGRAM IMPACT DASHBOARD ROUTE GROUP */}
+          <Route path="/dashboard/government" element={<GovernmentDashboardLayout />}>
+            <Route index element={<GovernmentOverviewPage />} />
+            <Route path="program-impact" element={<ProgramImpactDashboardPage />} />
+            <Route path="training-programs" element={<TrainingProgramsPage />} />
+            <Route path="training-providers" element={<ProvidersPage />} />
+            <Route path="trainee-outcomes" element={<TraineesPage />} />
+            <Route path="employment-outcomes" element={<EmploymentOutcomesPage />} />
+            <Route path="skill-gap-engine" element={<SkillGapsPage />} />
+            <Route path="district-intelligence" element={<DistrictInsightsPage />} />
+            <Route path="ai-anomaly" element={<AnomalyCenterPage />} />
+            <Route path="early-intervention" element={<EarlyInterventionPage />} />
+            <Route path="outcome-passport" element={<OutcomePassportPage />} />
+            <Route path="follow-ups" element={<FollowupsPage />} />
+            <Route path="program-roi" element={<ProgramROIInvestmentPage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="consent-privacy" element={<ConsentPrivacyPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
+
+          {/* Legacy route redirects to preserve deep links */}
+          <Route path="/trainee-dashboard" element={<Navigate to="/dashboard/trainee" replace />} />
+          <Route path="/program-impact" element={<Navigate to="/dashboard/government/program-impact" replace />} />
+          <Route path="/trainees" element={<Navigate to="/dashboard/government/trainee-outcomes" replace />} />
+          <Route path="/programs" element={<Navigate to="/dashboard/government/training-programs" replace />} />
+          <Route path="/employment-outcomes" element={<Navigate to="/dashboard/government/employment-outcomes" replace />} />
+          <Route path="/skill-gaps" element={<Navigate to="/dashboard/government/skill-gap-engine" replace />} />
+          <Route path="/providers" element={<Navigate to="/dashboard/government/training-providers" replace />} />
+          <Route path="/district-insights" element={<Navigate to="/dashboard/government/district-intelligence" replace />} />
+          <Route path="/outcome-passport" element={<Navigate to="/dashboard/government/outcome-passport" replace />} />
+          <Route path="/followups" element={<Navigate to="/dashboard/government/follow-ups" replace />} />
+          <Route path="/anomalies" element={<Navigate to="/dashboard/government/ai-anomaly" replace />} />
+          <Route path="/early-warning" element={<Navigate to="/dashboard/government/early-intervention" replace />} />
+          <Route path="/program-roi" element={<Navigate to="/dashboard/government/program-roi" replace />} />
+          <Route path="/reports" element={<Navigate to="/dashboard/government/reports" replace />} />
+          <Route path="/consent-privacy" element={<Navigate to="/dashboard/government/consent-privacy" replace />} />
+          <Route path="/settings" element={<Navigate to="/dashboard/government/settings" replace />} />
+
+          {/* Root & Fallback Redirects */}
+          <Route path="/" element={<RootRedirect />} />
+          <Route path="*" element={<RootRedirect />} />
         </Routes>
       </BrowserRouter>
     </AppProvider>

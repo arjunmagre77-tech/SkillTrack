@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import type { UserRole } from '../../types';
 import { 
   Search, 
@@ -13,7 +13,9 @@ import {
   Database,
   LogOut,
   PanelLeft,
-  Menu
+  Menu,
+  UserCheck,
+  BarChart3
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -31,19 +33,28 @@ export const Navbar: React.FC = () => {
   } = useApp();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isTraineeActive = location.pathname.startsWith('/dashboard/trainee');
+  const isGovernmentActive = location.pathname.startsWith('/dashboard/government');
 
   const pendingAnomaliesCount = anomalies.filter(a => a.status === 'Requires Review').length;
 
-  const roleOptions: { role: UserRole; label: string; icon: React.ReactNode }[] = [
-    { role: 'ADMIN', label: 'Program Admin (MSDE)', icon: <ShieldCheck className="w-4 h-4 text-emerald-600" /> },
-    { role: 'TRAINING_PROVIDER', label: 'Training Provider (MSDC)', icon: <Building2 className="w-4 h-4 text-blue-600" /> },
-    { role: 'EMPLOYER', label: 'Employer Partner (HR)', icon: <Layers className="w-4 h-4 text-purple-600" /> },
-    { role: 'TRAINEE', label: 'Trainee Portal (Rahul S.)', icon: <GraduationCap className="w-4 h-4 text-amber-600" /> },
+  const roleOptions: { role: UserRole; label: string; icon: React.ReactNode; targetDashboard: string }[] = [
+    { role: 'ADMIN', label: 'Program Admin (MSDE)', icon: <ShieldCheck className="w-4 h-4 text-emerald-600" />, targetDashboard: '/dashboard/government' },
+    { role: 'TRAINING_PROVIDER', label: 'Training Provider (MSDC)', icon: <Building2 className="w-4 h-4 text-blue-600" />, targetDashboard: '/dashboard/government' },
+    { role: 'EMPLOYER', label: 'Employer Partner (HR)', icon: <Layers className="w-4 h-4 text-purple-600" />, targetDashboard: '/dashboard/government' },
+    { role: 'TRAINEE', label: 'Trainee Portal (Rahul S.)', icon: <GraduationCap className="w-4 h-4 text-amber-600" />, targetDashboard: '/dashboard/trainee' },
   ];
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleRoleSelect = (role: UserRole, targetDashboard: string) => {
+    setSelectedRole(role);
+    navigate(targetDashboard);
   };
 
   return (
@@ -59,7 +70,7 @@ export const Navbar: React.FC = () => {
           {sidebarOpen ? <PanelLeft className="w-5 h-5 text-gov-800" /> : <Menu className="w-5 h-5 text-gov-800" />}
         </button>
 
-        <Link to="/" className="flex items-center gap-3 group">
+        <Link to={isTraineeActive ? "/dashboard/trainee" : "/dashboard/government"} className="flex items-center gap-3 group">
           <div className="w-10 h-10 rounded-lg bg-gov-900 text-white flex items-center justify-center font-black text-lg shadow-md border border-gov-800 group-hover:bg-gov-800 transition">
             <span className="text-teal-400">ST</span>
           </div>
@@ -77,8 +88,34 @@ export const Navbar: React.FC = () => {
         </Link>
       </div>
 
+      {/* DASHBOARD SWITCHER TOGGLE */}
+      <div className="hidden md:flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
+        <button
+          onClick={() => navigate('/dashboard/trainee')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer ${
+            isTraineeActive 
+              ? 'bg-teal-600 text-white shadow' 
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+          }`}
+        >
+          <UserCheck className="w-3.5 h-3.5" />
+          <span>Trainee Dashboard</span>
+        </button>
+        <button
+          onClick={() => navigate('/dashboard/government')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer ${
+            isGovernmentActive 
+              ? 'bg-blue-600 text-white shadow' 
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+          }`}
+        >
+          <BarChart3 className="w-3.5 h-3.5" />
+          <span>Government Dashboard</span>
+        </button>
+      </div>
+
       {/* Global Search */}
-      <div className="hidden lg:flex items-center relative w-72">
+      <div className="hidden xl:flex items-center relative w-64">
         <Search className="w-4 h-4 absolute left-3 text-slate-400" />
         <input
           type="text"
@@ -98,12 +135,12 @@ export const Navbar: React.FC = () => {
           title="Reload active candidate dataset"
         >
           <Database className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Reload Dataset</span>
+          <span className="hidden sm:inline">Reload Data</span>
         </button>
 
         {/* Notifications Alert Center badge */}
         <button 
-          onClick={() => navigate('/anomalies')}
+          onClick={() => navigate('/dashboard/government/ai-anomaly')}
           className="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition"
           title="AI Anomaly Alerts"
         >
@@ -136,13 +173,37 @@ export const Navbar: React.FC = () => {
             </div>
 
             <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">
+              Switch Dashboard
+            </div>
+
+            <button
+              onClick={() => navigate('/dashboard/trainee')}
+              className={`w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-slate-50 transition ${
+                isTraineeActive ? 'bg-teal-50 font-bold text-teal-900' : 'text-slate-700'
+              }`}
+            >
+              <UserCheck className="w-4 h-4 text-teal-600" />
+              <span>Trainee / Candidate Dashboard</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/dashboard/government')}
+              className={`w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-slate-50 transition ${
+                isGovernmentActive ? 'bg-blue-50 font-bold text-blue-900' : 'text-slate-700'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4 text-blue-600" />
+              <span>Government / Program Dashboard</span>
+            </button>
+
+            <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-2">
               Switch Access Role
             </div>
 
             {roleOptions.map(opt => (
               <button
                 key={opt.role}
-                onClick={() => setSelectedRole(opt.role)}
+                onClick={() => handleRoleSelect(opt.role, opt.targetDashboard)}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs hover:bg-slate-50 transition ${
                   selectedRole === opt.role ? 'bg-slate-100 font-bold text-gov-900' : 'text-slate-700'
                 }`}

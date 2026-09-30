@@ -20,7 +20,7 @@ export const DistrictInsightsPage: React.FC = () => {
             key={d.district} 
             onClick={() => {
               setSelectedDistrict(d.district);
-              navigate('/program-impact');
+              navigate('/dashboard/government/program-impact');
             }}
             className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 hover:border-teal-400 hover:shadow-md transition cursor-pointer"
           >

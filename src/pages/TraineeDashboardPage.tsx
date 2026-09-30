@@ -113,7 +113,7 @@ export const TraineeDashboardPage: React.FC = () => {
             </div>
 
             <button
-              onClick={() => navigate('/outcome-passport')}
+              onClick={() => navigate('/dashboard/trainee/passport')}
               className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-gov-950 font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Award className="w-3.5 h-3.5" />
@@ -284,7 +284,7 @@ export const TraineeDashboardPage: React.FC = () => {
                 {selectedTrainee.unemploymentReason?.details || 'Skill disparity between regional candidate and local employer expectation.'}
               </p>
               <button 
-                onClick={() => navigate('/early-warning')}
+                onClick={() => navigate('/dashboard/trainee/skill-gap')}
                 className="mt-2 text-xs font-bold text-rose-700 underline hover:text-rose-900 transition"
               >
                 Trigger AI Recommended Intervention →

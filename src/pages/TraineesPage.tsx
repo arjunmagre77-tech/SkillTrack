@@ -125,7 +125,7 @@ export const TraineesPage: React.FC = () => {
                     <button
                       onClick={() => {
                         setSelectedTraineeId(t.id);
-                        navigate('/trainee-dashboard');
+                        navigate('/dashboard/trainee');
                       }}
                       className="px-2.5 py-1 bg-gov-900 hover:bg-gov-800 text-teal-300 text-[11px] font-bold rounded flex items-center gap-1 transition cursor-pointer"
                     >

@@ -309,7 +309,7 @@ export const ProgramImpactDashboardPage: React.FC = () => {
             <p className="text-xs text-slate-500">Root-cause breakdown across non-employed candidates for targeted policy intervention</p>
           </div>
           <button 
-            onClick={() => navigate('/early-warning')}
+            onClick={() => navigate('/dashboard/government/early-intervention')}
             className="text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-lg hover:bg-amber-100 transition"
           >
             Launch Early Interventions →

@@ -78,7 +78,7 @@ export const EarlyInterventionPage: React.FC = () => {
                 <button
                   onClick={() => {
                     setSelectedTraineeId(t.id);
-                    navigate('/trainee-dashboard');
+                    navigate('/dashboard/trainee');
                   }}
                   className="text-xs font-bold text-teal-700 hover:text-teal-900 underline"
                 >
