@@ -30,7 +30,6 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
 
   const isTraineeActive = location.pathname.startsWith('/dashboard/trainee');
-  const isGovernmentActive = location.pathname.startsWith('/dashboard/government');
 
   const pendingAnomaliesCount = anomalies.filter(a => a.status === 'Requires Review').length;
   const isGovUser = currentUser?.role === 'GOVERNMENT';

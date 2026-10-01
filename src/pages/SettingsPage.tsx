@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Database } from 'lucide-react';
 
 export const SettingsPage: React.FC = () => {
-  const { loadDemoData, showToast } = useApp();
+  const { loadDemoData } = useApp();
 
   return (
     <div className="space-y-6 pb-12 max-w-4xl mx-auto">
