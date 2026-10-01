@@ -6,11 +6,17 @@ import { GovernmentSidebar } from './GovernmentSidebar';
 import { Toast } from '../common/Toast';
 
 export const GovernmentDashboardLayout: React.FC = () => {
-  const { isAuthenticated } = useApp();
+  const { isAuthenticated, currentUser } = useApp();
   const location = useLocation();
 
+  // If not logged in at all, redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // If logged in but NOT a GOVERNMENT user, redirect to their own dashboard
+  if (currentUser?.role !== 'GOVERNMENT') {
+    return <Navigate to="/dashboard/trainee" replace />;
   }
 
   return (

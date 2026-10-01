@@ -6,11 +6,17 @@ import { TraineeSidebar } from './TraineeSidebar';
 import { Toast } from '../common/Toast';
 
 export const TraineeDashboardLayout: React.FC = () => {
-  const { isAuthenticated } = useApp();
+  const { isAuthenticated, currentUser } = useApp();
   const location = useLocation();
 
+  // If not logged in at all, redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // If logged in but NOT a TRAINEE, redirect to their own dashboard
+  if (currentUser?.role !== 'TRAINEE') {
+    return <Navigate to="/dashboard/government" replace />;
   }
 
   return (

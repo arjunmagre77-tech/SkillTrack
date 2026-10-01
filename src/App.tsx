@@ -39,7 +39,10 @@ import { SettingsPage } from './pages/SettingsPage';
 
 // Root Redirect Component based on User Role
 const RootRedirect: React.FC = () => {
-  const { selectedRole } = useApp();
+  const { isAuthenticated, selectedRole } = useApp();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
   if (selectedRole === 'TRAINEE') {
     return <Navigate to="/dashboard/trainee" replace />;
   }

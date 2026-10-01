@@ -17,7 +17,7 @@ export type NavigationTab =
   | 'consent-privacy'
   | 'settings';
 
-export type UserRole = 'TRAINEE' | 'TRAINING_PROVIDER' | 'EMPLOYER' | 'ADMIN';
+export type UserRole = 'GOVERNMENT' | 'TRAINEE';
 
 export interface AuthUser {
   id: string;

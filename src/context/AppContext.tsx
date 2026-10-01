@@ -60,24 +60,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const toggleSidebar = () => setSidebarOpen(prev => !prev);
 
-  // Load auth from localStorage or default to logged-in Admin for smooth access
+  // Load auth from localStorage — no auto-login fallback
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     const saved = localStorage.getItem('skilltrack_auth');
-    return saved ? JSON.parse(saved).isAuthenticated : true;
+    return saved ? JSON.parse(saved).isAuthenticated : false;
   });
 
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => {
     const saved = localStorage.getItem('skilltrack_auth');
-    return saved ? JSON.parse(saved).user : {
-      id: 'USR-001',
-      name: 'Dr. Rajesh Deshmukh',
-      email: 'admin@skilltrack.gov.in',
-      role: 'ADMIN',
-      organization: 'Ministry of Skill Development & Entrepreneurship'
-    };
+    return saved ? JSON.parse(saved).user : null;
   });
 
-  const [selectedRole, setSelectedRole] = useState<UserRole>(() => currentUser?.role || 'ADMIN');
+  const [selectedRole, setSelectedRole] = useState<UserRole>(() => currentUser?.role || 'GOVERNMENT');
   const [activeTab, setActiveTab] = useState<NavigationTab>('overview');
   const [selectedTraineeId, setSelectedTraineeId] = useState<string>('TRN-2026-001');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('Pune');
@@ -95,9 +89,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const login = (email: string, role: UserRole, customName?: string) => {
     const defaultNames: Record<UserRole, string> = {
-      ADMIN: 'Dr. Rajesh Deshmukh',
-      TRAINING_PROVIDER: 'Maharashtra Skill Center (MSDC)',
-      EMPLOYER: 'XYZ Technologies HR Portal',
+      GOVERNMENT: 'Dr. Rajesh Deshmukh',
       TRAINEE: 'Rahul Sharma'
     };
 
@@ -106,7 +98,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       name: customName || defaultNames[role] || 'System User',
       email: email,
       role: role,
-      organization: role === 'ADMIN' ? 'State Skill Mission' : role === 'TRAINING_PROVIDER' ? 'MSDC Pune' : role === 'EMPLOYER' ? 'XYZ Tech' : 'Candidate Portal'
+      organization: role === 'GOVERNMENT' ? 'State Skill Mission — Ministry of Skill Development' : 'Candidate Portal'
     };
 
     setIsAuthenticated(true);

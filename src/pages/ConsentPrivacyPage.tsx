@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { ShieldCheck, Check } from 'lucide-react';
 
 export const ConsentPrivacyPage: React.FC = () => {
-  const { selectedTrainee, updateConsent, selectedRole, setSelectedRole } = useApp();
+  const { selectedTrainee, updateConsent, selectedRole } = useApp();
 
   const consentItems: { key: keyof typeof selectedTrainee.consent; label: string; desc: string }[] = [
     { key: 'employmentStatus', label: 'Employment Status Sharing', desc: 'Allow sharing whether you are currently employed, self-employed or job seeking.' },
@@ -84,20 +84,17 @@ export const ConsentPrivacyPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ROLE-BASED ACCESS CONTROL (RBAC) PREVIEW */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
         <h2 className="text-base font-extrabold text-gov-900">Role-Based Security Matrix</h2>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           {[
-            { role: 'TRAINEE', title: 'Trainee Role', scope: 'Access restricted strictly to own digital profile, outcome passport & skill assessments.' },
-            { role: 'TRAINING_PROVIDER', title: 'Training Provider', scope: 'Access restricted to enrolled candidates and provider aggregate outcome indicators.' },
-            { role: 'EMPLOYER', title: 'Employer Partner', scope: 'Access restricted to verified candidate verification requests & salary confirmation portal.' },
-            { role: 'ADMIN', title: 'Program Administrator', scope: 'Full state-level aggregate analytics, public ROI & AI data quality audit tools.' },
+            { role: 'TRAINEE', title: 'Trainee / Candidate', scope: 'Access restricted strictly to own digital profile, outcome passport & skill assessments. Cannot view other candidates\' data.' },
+            { role: 'GOVERNMENT', title: 'Government Official', scope: 'Full state-level aggregate analytics, public ROI, AI data quality audit tools, district intelligence & anomaly center.' },
           ].map(r => (
-            <div key={r.role} className={`p-4 rounded-xl border space-y-2 cursor-pointer transition ${
-              selectedRole === r.role ? 'bg-gov-900 text-white border-gov-950 shadow-md' : 'bg-slate-50 text-slate-800 border-slate-200 hover:border-slate-300'
-            }`} onClick={() => setSelectedRole(r.role as any)}>
+            <div key={r.role} className={`p-4 rounded-xl border space-y-2 ${
+              selectedRole === r.role ? 'bg-gov-900 text-white border-gov-950 shadow-md' : 'bg-slate-50 text-slate-800 border-slate-200'
+            }`}>
               <div className="flex items-center justify-between">
                 <strong className="text-xs font-bold">{r.title}</strong>
                 {selectedRole === r.role && <Check className="w-4 h-4 text-teal-400" />}
