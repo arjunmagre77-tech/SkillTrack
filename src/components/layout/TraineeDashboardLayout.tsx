@@ -20,11 +20,11 @@ export const TraineeDashboardLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-900 selection:bg-teal-100 selection:text-teal-900">
+    <div className="min-h-screen bg-transparent flex flex-col font-sans text-slate-900 selection:bg-teal-100 selection:text-teal-900">
       <Navbar />
       <div className="flex-1 flex overflow-hidden">
         <TraineeSidebar />
-        <main className="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8">
+        <main className="flex-1 overflow-y-auto bg-slate-50/60 backdrop-blur-[2px] p-4 md:p-8 custom-scrollbar">
           <Outlet />
         </main>
       </div>
