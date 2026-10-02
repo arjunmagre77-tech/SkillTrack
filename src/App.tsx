@@ -6,7 +6,7 @@ import { TraineeDashboardLayout } from './components/layout/TraineeDashboardLayo
 import { GovernmentDashboardLayout } from './components/layout/GovernmentDashboardLayout';
 
 import { LoginPage } from './pages/LoginPage';
-import { CodeBackground } from './components/ui/code-background';
+import { BackgroundPaths } from './components/ui/background-paths';
 
 // Trainee Pages
 import { TraineeDashboardPage } from './pages/TraineeDashboardPage';
@@ -53,11 +53,15 @@ const RootRedirect: React.FC = () => {
 export function App() {
   return (
     <AppProvider>
-      <div className="relative min-h-screen">
-        {/* Main Animated Code Lattice Background */}
-        <CodeBackground className="fixed inset-0 z-0 pointer-events-none" />
+      <div className="relative min-h-screen bg-[#F5F8FC]">
+        {/*
+          Global BackgroundPaths — one single instance here.
+          pointer-events-none ensures it NEVER blocks any UI element.
+          z-0 keeps it below all content layers.
+        */}
+        <BackgroundPaths className="fixed inset-0 z-0" />
 
-        {/* Website Content Layer */}
+        {/* All application content sits above the background on z-10 */}
         <div className="relative z-10">
           <BrowserRouter>
             <Routes>
@@ -99,7 +103,7 @@ export function App() {
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
-              {/* Legacy route redirects to preserve deep links */}
+              {/* Legacy route redirects */}
               <Route path="/trainee-dashboard" element={<Navigate to="/dashboard/trainee" replace />} />
               <Route path="/program-impact" element={<Navigate to="/dashboard/government/program-impact" replace />} />
               <Route path="/trainees" element={<Navigate to="/dashboard/government/trainee-outcomes" replace />} />

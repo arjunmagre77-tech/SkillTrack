@@ -1,28 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   SKILLTRACK GLOBAL DESIGN SYSTEM
+   Visual language: Navy · Blue · White · Clean · Professional
+   ============================================================ */
+
 @layer base {
   :root {
-    --color-primary: #102a43;
-    --color-primary-hover: #243b53;
-    --color-accent: #0d9488;
+    /* SkillTrack Design Tokens */
+    --color-navy-900:    #071A33;
+    --color-navy-800:    #0B2342;
+    --color-navy-700:    #1E3A5F;
+    --color-brand-600:   #2563EB;
+    --color-brand-500:   #3B82F6;
+    --color-cyan-500:    #06B6D4;
+    --color-surface:     #F5F8FC;
+    --color-border:      #D9E2EF;
+    --color-text-main:   #0F172A;
+    --color-text-muted:  #64748B;
 
-    /* CodeBackground Design Tokens */
-    --cb-bg-0: #04050a;
-    --cb-bg-1: #0a0d18;
-    --cb-ink: #e6eaff;
+    /* Legacy tokens (kept for backward compatibility) */
+    --color-primary:       #0B2342;
+    --color-primary-hover: #1E3A5F;
+    --color-accent:        #06B6D4;
+
+    /* CodeBackground legacy tokens */
+    --cb-bg-0:    #04050a;
+    --cb-bg-1:    #0a0d18;
+    --cb-ink:     #e6eaff;
     --cb-ink-dim: rgba(230, 234, 255, 0.55);
-    --cb-font: "JetBrains Mono", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --cb-font:    "JetBrains Mono", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     --cb-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   }
-  
+
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased min-h-screen selection:bg-teal-100 selection:text-teal-900;
+    @apply bg-[#F5F8FC] text-[#0F172A] font-sans antialiased min-h-screen;
+    @apply selection:bg-blue-100 selection:text-blue-900;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Smooth focus rings using brand blue */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white;
   }
 }
 
-/* CodeBackground Animated Styles */
+/* ============================================================
+   GLOBAL COMPONENT CLASSES
+   ============================================================ */
+
+@layer components {
+  /* ---- Cards ---- */
+  .card {
+    @apply bg-white rounded-2xl border border-[#D9E2EF] shadow-card;
+  }
+  .card-hover {
+    @apply hover:shadow-card-hover hover:border-brand-200 transition-all duration-200;
+  }
+  .card-padding {
+    @apply p-5 md:p-6;
+  }
+
+  /* ---- Buttons ---- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm
+           transition-all duration-200 active:scale-[0.98] cursor-pointer
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+  }
+  .btn-primary {
+    @apply btn px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white shadow-blue-sm;
+  }
+  .btn-secondary {
+    @apply btn px-4 py-2.5 bg-white hover:bg-slate-50 text-navy-900 border border-[#D9E2EF] shadow-sm;
+  }
+  .btn-ghost {
+    @apply btn px-4 py-2.5 text-navy-700 hover:bg-slate-100;
+  }
+  .btn-danger {
+    @apply btn px-4 py-2.5 bg-danger-600 hover:bg-danger-700 text-white;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  /* ---- Badges ---- */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border;
+  }
+  .badge-success  { @apply badge bg-success-50  text-success-700  border-success-100; }
+  .badge-warning  { @apply badge bg-warning-50  text-warning-700  border-warning-100; }
+  .badge-danger   { @apply badge bg-danger-50   text-danger-700   border-danger-100; }
+  .badge-info     { @apply badge bg-brand-50    text-brand-700    border-brand-100; }
+  .badge-navy     { @apply badge bg-navy-100    text-navy-800     border-navy-200; }
+  .badge-muted    { @apply badge bg-slate-100   text-slate-600    border-slate-200; }
+
+  /* ---- Form Elements ---- */
+  .form-input {
+    @apply w-full px-3 py-2.5 text-sm text-[#0F172A] bg-white border border-[#D9E2EF] rounded-xl
+           placeholder:text-[#94A3B8] transition-all duration-150
+           focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500;
+  }
+  .form-select {
+    @apply form-input cursor-pointer;
+  }
+  .form-label {
+    @apply block text-xs font-semibold text-[#64748B] uppercase tracking-wider mb-1.5;
+  }
+
+  /* ---- Table ---- */
+  .table-container {
+    @apply bg-white rounded-2xl border border-[#D9E2EF] shadow-card overflow-hidden;
+  }
+  .table-base {
+    @apply w-full text-left text-xs;
+  }
+  .table-header {
+    @apply bg-[#F5F8FC] border-b border-[#D9E2EF];
+  }
+  .table-th {
+    @apply px-4 py-3 text-[10px] font-bold text-[#64748B] uppercase tracking-wider whitespace-nowrap;
+  }
+  .table-row {
+    @apply border-b border-[#F0F4F9] hover:bg-brand-50/40 transition-colors duration-100;
+  }
+  .table-td {
+    @apply px-4 py-3;
+  }
+
+  /* ---- Section Headers ---- */
+  .section-title {
+    @apply text-sm font-extrabold text-[#0F172A] flex items-center gap-2;
+  }
+  .section-subtitle {
+    @apply text-xs text-[#64748B] mt-0.5;
+  }
+
+  /* ---- Stat Cards ---- */
+  .stat-card {
+    @apply card card-padding space-y-2;
+  }
+
+  /* ---- Status Pills ---- */
+  .status-employed     { @apply badge-success; }
+  .status-unemployed   { @apply badge-warning; }
+  .status-self-employed { @apply badge bg-violet-50 text-violet-700 border-violet-100; }
+  .status-apprenticeship { @apply badge-info; }
+}
+
+/* ============================================================
+   LEGACY CODEBACKGROUND CLASSES (kept for existing usage)
+   ============================================================ */
+
 .cb-root {
   position: fixed;
   inset: 0;
@@ -74,59 +209,57 @@
   animation: cb-label-in 1s var(--cb-ease-out) forwards;
 }
 
-@keyframes cb-sheen {
-  from {
-    background-position: 0% 0;
-  }
-  to {
-    background-position: 100% 0;
-  }
-}
-
 @keyframes cb-label-in {
-  from {
-    opacity: 0;
-    filter: blur(6px);
-    transform: translate(-50%, calc(-50% + 6px));
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: translate(-50%, -50%);
-  }
+  from { opacity: 0; filter: blur(6px); transform: translate(-50%, calc(-50% + 6px)); }
+  to   { opacity: 1; filter: blur(0);   transform: translate(-50%, -50%); }
 }
 
-/* Custom Print Styles for Outcome Passport & Reports */
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+
 @media print {
-  .no-print {
-    display: none !important;
-  }
-  .print-only {
-    display: block !important;
-  }
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  .passport-card {
-    border: 2px solid #0b1d30 !important;
-    box-shadow: none !important;
-    page-break-inside: avoid;
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  body { background: white !important; color: black !important; }
+  .passport-card { border: 2px solid #0b1d30 !important; box-shadow: none !important; page-break-inside: avoid; }
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #F5F8FC; }
+::-webkit-scrollbar-thumb { background: #BDD1E8; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94B3D5; }
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* ============================================================
+   UTILITY OVERRIDES
+   ============================================================ */
+
+/* Glassmorphism utility classes for modal/overlay contexts */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(217, 226, 239, 0.6);
 }
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+.glass-dark {
+  background: rgba(7, 26, 51, 0.80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(37, 99, 235, 0.2);
 }
