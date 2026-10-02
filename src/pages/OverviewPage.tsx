@@ -12,10 +12,12 @@ import {
   Database,
   MapPin,
   ArrowRight,
-  GraduationCap
+  GraduationCap,
+  CheckCircle2,
+  BookOpen,
 } from 'lucide-react';
 
-// Shared page header component
+// Shared page header component used across Government intelligence pages
 export const GovPageHeader: React.FC<{
   icon: React.ReactNode;
   label: string;
@@ -45,7 +47,6 @@ export const GovPageHeader: React.FC<{
         <MapPin className="w-3.5 h-3.5 text-[#1565C0]" />
         <span className="text-slate-500 font-medium">Active Jurisdiction:</span>
         <span className="font-bold">{jurisdiction}</span>
-        <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
       </div>
     </div>
   </div>
@@ -63,6 +64,16 @@ export const OverviewPage: React.FC = () => {
     { label: 'Apprenticeships', value: '8.0%', sub: 'Under Industry Training', icon: <GraduationCap className="w-5 h-5" />, color: 'teal', borderColor: 'border-l-teal-500' },
     { label: 'Avg Starting Salary', value: '₹24,500', sub: 'Per Month', icon: <TrendingUp className="w-5 h-5" />, color: 'amber', borderColor: 'border-l-amber-400' },
     { label: 'Skill-Gap Reduction', value: '32.0%', sub: 'Demand-Supply Match', icon: <Target className="w-5 h-5" />, color: 'rose', borderColor: 'border-l-rose-500' },
+  ];
+
+  const journeySteps = [
+    { title: 'Enrollment & Profiling', desc: 'Baseline skill assessments, socio-demographic tags & aspiration mapping.', icon: <Users className="w-4 h-4 text-blue-600" /> },
+    { title: 'Training & Attendance', desc: 'Biometric tracking, curriculum milestones, and hands-on lab audits.', icon: <BookOpen className="w-4 h-4 text-indigo-600" /> },
+    { title: 'Certification Assessment', desc: 'Third-party assessment & tamper-proof digital certification credentialing.', icon: <Award className="w-4 h-4 text-emerald-600" /> },
+    { title: 'Placement & Job Offers', desc: 'Automated job matching, offer letters, and wage benchmarking.', icon: <Briefcase className="w-4 h-4 text-purple-600" /> },
+    { title: 'EPFO Verification', desc: 'Automated provident fund cross-verification to validate genuine payroll onboarding.', icon: <CheckCircle2 className="w-4 h-4 text-teal-600" /> },
+    { title: '6-Month Retention', desc: 'Milestone checks, employer feedback, wage escalation & stability indicators.', icon: <RefreshCw className="w-4 h-4 text-amber-600" /> },
+    { title: 'Career Progression', desc: '12-month follow-up, upskilling recommendations & wage growth tracking.', icon: <TrendingUp className="w-4 h-4 text-rose-600" /> },
   ];
 
   const iconColorMap: Record<string, string> = {
@@ -96,7 +107,7 @@ export const OverviewPage: React.FC = () => {
               SkillTrack Government Dashboard
             </h1>
             <p className="text-base font-semibold text-blue-100">
-              "State-Level Program Impact & Governance Portal"
+              “From Training to Sustainable Employment”
             </p>
           </div>
 
@@ -106,7 +117,7 @@ export const OverviewPage: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
-              to="/program-impact"
+              to="/dashboard/government/program-impact"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#1565C0] font-bold text-sm rounded-xl shadow-lg hover:bg-blue-50 transition active:scale-95 cursor-pointer"
             >
               <BarChart2 className="w-4 h-4" />
@@ -115,7 +126,7 @@ export const OverviewPage: React.FC = () => {
             </Link>
 
             <Link
-              to="/district-insights"
+              to="/dashboard/government/district-intelligence"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/15 border border-white/30 text-white font-semibold text-sm rounded-xl hover:bg-white/25 transition active:scale-95 cursor-pointer backdrop-blur-sm"
             >
               <MapPin className="w-4 h-4" />
@@ -159,27 +170,57 @@ export const OverviewPage: React.FC = () => {
         ))}
       </div>
 
+      {/* LONGITUDINAL JOURNEY VISUALIZATION */}
+      <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-extrabold text-[#0D1B3E]">The Longitudinal Trainee Journey</h2>
+            <p className="text-xs text-slate-500">SkillTrack extends beyond course completion into 12-month post-placement outcomes</p>
+          </div>
+          <span className="text-xs bg-blue-50 text-blue-800 px-3 py-1 rounded-full font-bold border border-blue-200">
+            End-to-End Traceability
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3 relative">
+          {journeySteps.map((step, idx) => (
+            <div key={idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-blue-400 hover:shadow-md transition group">
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-2 bg-white rounded-lg border border-slate-200 shadow-xs group-hover:bg-blue-50 transition">
+                  {step.icon}
+                </div>
+                <span className="text-[10px] font-bold text-slate-400 font-mono">0{idx + 1}</span>
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-[#0D1B3E] group-hover:text-blue-700 transition">{step.title}</h3>
+                <p className="text-[11px] text-slate-500 mt-1 leading-snug">{step.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Quick Access Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {[
           {
             title: 'Program Impact Dashboard',
             desc: 'Macro skilling outcome evaluation — Employment conversion, retention & wage growth across all sectors.',
-            to: '/program-impact',
+            to: '/dashboard/government/program-impact',
             color: 'from-blue-600 to-blue-700',
             icon: <BarChart2 className="w-6 h-6 text-white" />,
           },
           {
             title: 'Training Provider Analytics',
             desc: 'Comparative neural performance indicators for institutional quality audit across providers.',
-            to: '/providers',
+            to: '/dashboard/government/training-providers',
             color: 'from-emerald-600 to-teal-600',
             icon: <Award className="w-6 h-6 text-white" />,
           },
           {
             title: 'Trainees Outcome Directory',
             desc: 'Longitudinal candidate repository with multi-source verified outcome records.',
-            to: '/trainees',
+            to: '/dashboard/government/trainee-outcomes',
             color: 'from-purple-600 to-indigo-600',
             icon: <Users className="w-6 h-6 text-white" />,
           },

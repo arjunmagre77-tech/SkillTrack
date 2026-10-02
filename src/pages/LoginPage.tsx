@@ -2,208 +2,255 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import type { UserRole } from '../types';
-import { 
-  ShieldCheck, 
-  Mail, 
-  KeyRound, 
-  Building2, 
-  GraduationCap, 
-  Layers, 
-  ArrowRight
+import {
+  ShieldCheck,
+  Mail,
+  KeyRound,
+  GraduationCap,
+  ArrowRight,
+  Landmark,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
+
+type LoginType = 'GOVERNMENT' | 'TRAINEE';
+
+interface LoginConfig {
+  role: LoginType;
+  label: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  demoEmail: string;
+  demoName: string;
+  accentFrom: string;
+  accentTo: string;
+  accentBorder: string;
+  accentText: string;
+  badgeColor: string;
+}
+
+const loginConfigs: LoginConfig[] = [
+  {
+    role: 'GOVERNMENT',
+    label: 'Government Official',
+    subtitle: 'Ministry / State Policy Analytics Portal',
+    icon: <Landmark className="w-7 h-7" />,
+    demoEmail: 'admin@skilltrack.gov.in',
+    demoName: 'Dr. Rajesh Deshmukh',
+    accentFrom: 'from-slate-800',
+    accentTo: 'to-slate-900',
+    accentBorder: 'border-blue-500',
+    accentText: 'text-blue-300',
+    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  },
+  {
+    role: 'TRAINEE',
+    label: 'Trainee / Candidate',
+    subtitle: 'Individual Outcome Passport & Skill Hub',
+    icon: <GraduationCap className="w-7 h-7" />,
+    demoEmail: 'rahul.sharma@example.com',
+    demoName: 'Rahul Sharma',
+    accentFrom: 'from-indigo-900',
+    accentTo: 'to-violet-950',
+    accentBorder: 'border-violet-400',
+    accentText: 'text-violet-300',
+    badgeColor: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  },
+];
 
 export const LoginPage: React.FC = () => {
   const { login } = useApp();
   const navigate = useNavigate();
 
-  const [selectedRole, setSelectedRole] = useState<UserRole>('ADMIN');
-  const [email, setEmail] = useState('admin@skilltrack360.gov.in');
-  const [password, setPassword] = useState('••••••••••••');
-  const [rememberMe, setRememberMe] = useState(true);
+  const [selectedType, setSelectedType] = useState<LoginType>('GOVERNMENT');
+  const [email, setEmail] = useState(loginConfigs[0].demoEmail);
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
-  // If already logged in, offer quick jump to dashboard
+  const active = loginConfigs.find(c => c.role === selectedType)!;
+
+  const handleSelectType = (cfg: LoginConfig) => {
+    setSelectedType(cfg.role);
+    setEmail(cfg.demoEmail);
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(email, selectedRole);
-    navigate('/');
+    login(email, selectedType as UserRole, active.demoName);
+    navigate(selectedType === 'GOVERNMENT' ? '/dashboard/government' : '/dashboard/trainee');
   };
 
-  const handleQuickLogin = (role: UserRole, demoEmail: string, demoName: string) => {
-    setSelectedRole(role);
-    setEmail(demoEmail);
-    login(demoEmail, role, demoName);
-    navigate('/');
+  const handleQuickLogin = (cfg: LoginConfig) => {
+    login(cfg.demoEmail, cfg.role as UserRole, cfg.demoName);
+    navigate(cfg.role === 'GOVERNMENT' ? '/dashboard/government' : '/dashboard/trainee');
   };
-
-  const roleConfigs: { role: UserRole; title: string; email: string; name: string; icon: React.ReactNode; desc: string }[] = [
-    { 
-      role: 'ADMIN', 
-      title: 'Program Admin', 
-      email: 'admin@skilltrack360.gov.in', 
-      name: 'Dr. Rajesh Deshmukh',
-      icon: <ShieldCheck className="w-5 h-5 text-emerald-600" />,
-      desc: 'State & Central Ministry Policy Analytics' 
-    },
-    { 
-      role: 'TRAINING_PROVIDER', 
-      title: 'Training Provider', 
-      email: 'provider@msdc.gov.in', 
-      name: 'MSDC Pune Center',
-      icon: <Building2 className="w-5 h-5 text-blue-600" />,
-      desc: 'Vocational Center Outcome Management' 
-    },
-    { 
-      role: 'EMPLOYER', 
-      title: 'Employer HR', 
-      email: 'hr@xyztech.com', 
-      name: 'XYZ Technologies HR',
-      icon: <Layers className="w-5 h-5 text-purple-600" />,
-      desc: 'Corporate Hiring & Payroll Verification' 
-    },
-    { 
-      role: 'TRAINEE', 
-      title: 'Trainee Portal', 
-      email: 'rahul.sharma@example.com', 
-      name: 'Rahul Sharma',
-      icon: <GraduationCap className="w-5 h-5 text-amber-600" />,
-      desc: 'Individual Digital Outcome Passport' 
-    },
-  ];
 
   return (
-    <div className="min-h-screen bg-slate-950/70 backdrop-blur-[1px] flex flex-col justify-center items-center p-4 relative overflow-hidden font-sans selection:bg-teal-100 selection:text-teal-900">
-      {/* Background Lighting & Glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-slate-950/80 backdrop-blur-sm flex flex-col justify-center items-center p-4 relative overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900">
+      {/* Background Lighting & Ambient Glows */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-xl space-y-6 relative z-10">
+      <div className="w-full max-w-lg space-y-6 relative z-10">
         {/* Brand Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-3 bg-gov-950/80 border border-gov-800 px-4 py-2 rounded-2xl shadow-lg">
-            <div className="w-10 h-10 rounded-xl bg-gov-900 text-teal-400 flex items-center justify-center font-extrabold text-xl border border-gov-800">
-              360
+          <div className="inline-flex items-center gap-3 bg-slate-900/90 border border-slate-700 px-5 py-2.5 rounded-2xl shadow-xl backdrop-blur-sm">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/20">
+              ST
             </div>
             <div className="text-left">
-              <h1 className="text-xl font-black text-white tracking-tight">SkillTrack 360</h1>
+              <h1 className="text-xl font-black text-white tracking-tight">SkillTrack</h1>
               <p className="text-[11px] text-slate-400 font-medium">Outcome Intelligence & Longitudinal Tracking</p>
             </div>
           </div>
-          <p className="text-xs text-slate-400">
-            Sign in to access your authorized role portal & digital outcome passport records
+          <p className="text-xs text-slate-400 max-w-xs mx-auto">
+            Secure access portal — select your role to continue
           </p>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6">
-          {/* Role Selector Tabs */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 block">Select Access Role:</label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {roleConfigs.map(item => (
-                <button
-                  key={item.role}
-                  type="button"
-                  onClick={() => {
-                    setSelectedRole(item.role);
-                    setEmail(item.email);
-                  }}
-                  className={`p-2.5 rounded-xl border flex flex-col items-center justify-center text-center gap-1 transition cursor-pointer ${
-                    selectedRole === item.role
-                      ? 'bg-gov-950 text-white border-gov-900 shadow-sm'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  {item.icon}
-                  <span className="text-[11px] font-bold leading-tight mt-0.5">{item.title}</span>
-                </button>
-              ))}
-            </div>
+        {/* Type Selector Cards */}
+        <div className="grid grid-cols-2 gap-3">
+          {loginConfigs.map(cfg => (
+            <button
+              key={cfg.role}
+              type="button"
+              onClick={() => handleSelectType(cfg)}
+              className={`relative rounded-2xl border-2 p-4 text-left transition-all duration-200 group cursor-pointer ${
+                selectedType === cfg.role
+                  ? `bg-gradient-to-br ${cfg.accentFrom} ${cfg.accentTo} ${cfg.accentBorder} shadow-lg shadow-black/30`
+                  : 'bg-slate-900/90 border-slate-800 hover:border-slate-600 hover:bg-slate-800/90'
+              }`}
+            >
+              {/* Active check indicator */}
+              {selectedType === cfg.role && (
+                <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                  <div className="w-2.5 h-2.5 rounded-full bg-white" />
+                </div>
+              )}
+
+              <div className={`mb-2.5 ${selectedType === cfg.role ? cfg.accentText : 'text-slate-400'} transition-colors`}>
+                {cfg.icon}
+              </div>
+              <div className={`text-sm font-bold ${selectedType === cfg.role ? 'text-white' : 'text-slate-300'} transition-colors`}>
+                {cfg.label}
+              </div>
+              <div className={`text-[11px] mt-0.5 leading-snug ${selectedType === cfg.role ? 'text-slate-300' : 'text-slate-500'} transition-colors`}>
+                {cfg.subtitle}
+              </div>
+
+              {selectedType === cfg.role && (
+                <div className={`mt-3 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${cfg.badgeColor}`}>
+                  <ShieldCheck className="w-3 h-3" /> Selected
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Login Form Card */}
+        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl backdrop-blur-sm space-y-5">
+          <div>
+            <h2 className="text-base font-bold text-white">{active.label} Sign In</h2>
+            <p className="text-xs text-slate-400 mt-0.5">{active.subtitle}</p>
           </div>
 
-          {/* Credentials Form */}
           <form onSubmit={handleFormSubmit} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 block">Official Email Address</label>
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-400 block">Email Address</label>
               <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                <Mail className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="name@organization.gov.in"
-                  className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-gov-600 focus:bg-white transition"
+                  className="w-full pl-9 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 />
               </div>
             </div>
 
-            <div className="space-y-1">
+            {/* Password */}
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-700 block">Password</label>
-                <span className="text-[11px] font-semibold text-teal-700 cursor-pointer hover:underline">Forgot password?</span>
+                <label className="text-xs font-semibold text-slate-400 block">Password</label>
+                <span className="text-[11px] font-semibold text-blue-400 cursor-pointer hover:underline">Forgot password?</span>
               </div>
               <div className="relative">
-                <KeyRound className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                <KeyRound className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-gov-600 focus:bg-white transition"
+                  placeholder="Enter your password"
+                  className="w-full pl-9 pr-10 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-medium text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(prev => !prev)}
+                  className="absolute right-3 top-3 text-slate-500 hover:text-slate-300 transition cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-1">
+            {/* Remember me */}
+            <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={e => setRememberMe(e.target.checked)}
-                  className="rounded text-teal-600 focus:ring-teal-500 w-4 h-4"
+                  className="rounded text-blue-500 focus:ring-blue-500 w-4 h-4 bg-slate-800 border-slate-700"
                 />
-                <span className="text-xs text-slate-600 font-medium">Keep me signed in</span>
+                <span className="text-xs text-slate-400 font-medium">Keep me signed in</span>
               </label>
-
-              <span className="text-[10px] text-slate-400 font-mono">SSL Encrypted 256-bit</span>
+              <span className="text-[10px] text-slate-500 font-mono">SSL 256-bit</span>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3 bg-gov-900 hover:bg-gov-800 text-teal-300 font-extrabold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
+              className="w-full py-3 bg-gradient-to-r from-[#1565C0] to-[#1976D2] hover:from-[#1976D2] hover:to-[#2196F3] text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
             >
-              <span>Sign In to {selectedRole} Portal</span>
-              <ArrowRight className="w-4 h-4 text-teal-400" />
+              <span>Sign In to {active.label} Portal</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          {/* Quick Demo One-Click Jump Buttons */}
-          <div className="border-t border-slate-100 pt-4 space-y-2">
+          {/* Quick Demo Login */}
+          <div className="border-t border-slate-800 pt-4 space-y-2">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-              Quick One-Click Access (Demo Login):
+              ⚡ Quick Demo Login (One-Click):
             </span>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {roleConfigs.map(c => (
+            <div className="grid grid-cols-2 gap-2">
+              {loginConfigs.map(cfg => (
                 <button
-                  key={c.role}
+                  key={cfg.role}
                   type="button"
-                  onClick={() => handleQuickLogin(c.role, c.email, c.name)}
-                  className="px-3 py-2 bg-slate-50 hover:bg-teal-50 border border-slate-200 hover:border-teal-300 rounded-xl text-left transition text-[11px] font-medium text-slate-700 flex items-center justify-between cursor-pointer"
+                  onClick={() => handleQuickLogin(cfg)}
+                  className="px-3 py-2.5 bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-slate-500 rounded-xl text-left transition flex items-center justify-between gap-2 group cursor-pointer"
                 >
-                  <span className="truncate font-bold text-gov-900">{c.title}</span>
-                  <ArrowRight className="w-3 h-3 text-teal-600 shrink-0" />
+                  <div>
+                    <div className="text-[11px] font-bold text-white truncate">{cfg.label}</div>
+                    <div className="text-[10px] text-slate-400 truncate">{cfg.demoEmail}</div>
+                  </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-blue-400 shrink-0 group-hover:translate-x-0.5 transition-transform" />
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Footer Security Badges */}
-        <div className="flex items-center justify-center gap-4 text-[11px] text-slate-400">
-          <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> DPDP Act Compliant</span>
+        {/* Footer */}
+        <div className="flex items-center justify-center gap-4 text-[11px] text-slate-500">
+          <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> DPDP Act Compliant</span>
           <span>•</span>
-          <span>EPFO Payroll Verification</span>
+          <span>EPFO Payroll Verified</span>
           <span>•</span>
           <span>State Skill Mission</span>
         </div>

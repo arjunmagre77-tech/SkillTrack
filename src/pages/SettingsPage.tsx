@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Database } from 'lucide-react';
 
 export const SettingsPage: React.FC = () => {
-  const { loadDemoData, selectedRole, setSelectedRole, showToast } = useApp();
+  const { loadDemoData } = useApp();
 
   return (
     <div className="space-y-6 pb-12 max-w-4xl mx-auto">
@@ -33,23 +33,16 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-        <h2 className="text-base font-extrabold text-gov-900">Active Access Role Selector</h2>
-        
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          {['ADMIN', 'TRAINING_PROVIDER', 'EMPLOYER', 'TRAINEE'].map(role => (
-            <button
-              key={role}
-              onClick={() => {
-                setSelectedRole(role as any);
-                showToast(`Switched active portal role to ${role}`, 'info');
-              }}
-              className={`p-4 rounded-xl border text-left font-bold transition cursor-pointer ${
-                selectedRole === role ? 'bg-gov-900 text-white border-gov-950' : 'bg-slate-50 text-slate-800 border-slate-200'
-              }`}
-            >
-              Role: {role}
-            </button>
-          ))}
+        <h2 className="text-base font-extrabold text-gov-900">Platform Information</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-xs font-bold text-gov-900">Government Official</span>
+            <p className="text-[11px] text-slate-500">Full state-level analytics, program impact, district intelligence, AI anomaly center and policy ROI tools.</p>
+          </div>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-xs font-bold text-gov-900">Trainee / Candidate</span>
+            <p className="text-[11px] text-slate-500">Access restricted to personal outcome passport, skill assessments, training programs and job applications.</p>
+          </div>
         </div>
       </div>
     </div>

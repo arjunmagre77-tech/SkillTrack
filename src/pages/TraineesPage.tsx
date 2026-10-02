@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 import { Search, CheckCircle2, Eye, MapPin, Users } from 'lucide-react';
 import { GovPageHeader } from './OverviewPage';
 
@@ -29,7 +30,8 @@ const ROW_ACCENT: Record<string, string> = {
 };
 
 export const TraineesPage: React.FC = () => {
-  const { trainees, setSelectedTraineeId, setActiveTab } = useApp();
+  const { trainees, setSelectedTraineeId } = useApp();
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [districtFilter, setDistrictFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -152,7 +154,7 @@ export const TraineesPage: React.FC = () => {
                       <button
                         onClick={() => {
                           setSelectedTraineeId(t.id);
-                          setActiveTab('trainee-dashboard');
+                          navigate('/dashboard/trainee');
                         }}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0D1B3E] hover:bg-[#1565C0] text-white text-[11px] font-bold rounded-xl transition cursor-pointer shadow-sm"
                       >

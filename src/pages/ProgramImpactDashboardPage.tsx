@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 import { FUNNEL_DATA, WAGE_PROGRESSION_TREND, UNEMPLOYMENT_REASONS_AGGREGATED } from '../data/mockData';
 import { 
   BarChart3, 
@@ -29,7 +30,8 @@ import {
 import { GovPageHeader } from './OverviewPage';
 
 export const ProgramImpactDashboardPage: React.FC = () => {
-  const { districts, providers, programs, selectedDistrict, setSelectedDistrict, setActiveTab } = useApp();
+  const { districts, providers, programs, selectedDistrict, setSelectedDistrict } = useApp();
+  const navigate = useNavigate();
 
   const [filterState, setFilterState] = useState('Maharashtra');
   const [filterProvider, setFilterProvider] = useState('ALL');
@@ -60,6 +62,7 @@ export const ProgramImpactDashboardPage: React.FC = () => {
         label="Government & Policy Intelligence"
         title="Program Impact Dashboard"
         subtitle="Macro skilling outcome evaluation • Employment conversion • Retention & wage growth • Provider performance"
+        jurisdiction={`${filterState} (State Level)`}
       />
 
       {/* Filters Bar */}
@@ -79,7 +82,7 @@ export const ProgramImpactDashboardPage: React.FC = () => {
               <MapPin className="w-3 h-3" /> District
             </label>
             <select value={selectedDistrict} onChange={e => setSelectedDistrict(e.target.value)} className={selectClass}>
-              <option value="ALL">Pune</option>
+              <option value="ALL">All Districts</option>
               {districts.map(d => <option key={d.district} value={d.district}>{d.district}</option>)}
             </select>
           </div>
@@ -313,8 +316,8 @@ export const ProgramImpactDashboardPage: React.FC = () => {
             <p className="text-xs text-slate-500 mt-0.5">Root-cause breakdown across non-employed candidates for targeted policy intervention</p>
           </div>
           <button 
-            onClick={() => setActiveTab('early-warning')}
-            className="text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100 transition shrink-0"
+            onClick={() => navigate('/dashboard/government/early-intervention')}
+            className="text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100 transition cursor-pointer shrink-0"
           >
             Launch Early Interventions →
           </button>

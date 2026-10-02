@@ -1,9 +1,11 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { useNavigate } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
 
 export const DistrictInsightsPage: React.FC = () => {
-  const { districts, setSelectedDistrict, setActiveTab } = useApp();
+  const { districts, setSelectedDistrict } = useApp();
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6 pb-12">
@@ -18,7 +20,7 @@ export const DistrictInsightsPage: React.FC = () => {
             key={d.district} 
             onClick={() => {
               setSelectedDistrict(d.district);
-              setActiveTab('program-impact');
+              navigate('/dashboard/government/program-impact');
             }}
             className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 hover:border-teal-400 hover:shadow-md transition cursor-pointer"
           >
