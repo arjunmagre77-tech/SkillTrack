@@ -3,7 +3,6 @@ import { useApp } from '../../context/AppContext';
 import { NavLink } from 'react-router-dom';
 import { governmentNavigation } from '../../config/navigation';
 import { ChevronLeft, ChevronRight, Building2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 // Category display config
 const CATEGORY_META: Record<string, { label: string; accent: string }> = {
@@ -22,7 +21,7 @@ export const GovernmentSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`flex flex-col shrink-0 select-none transition-all duration-300 ease-in-out ${
+      className={`flex flex-col shrink-0 select-none transition-[width] duration-200 ease-in-out ${
         sidebarOpen ? 'w-64' : 'w-16'
       } bg-navy-900 border-r border-navy-800 text-slate-300`}
       style={{ minHeight: 0 }}
@@ -31,28 +30,20 @@ export const GovernmentSidebar: React.FC = () => {
       <div className={`flex items-center border-b border-navy-800/70 min-h-[57px] px-3 ${
         sidebarOpen ? 'justify-between' : 'justify-center'
       }`}>
-        <AnimatePresence>
-          {sidebarOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -8 }}
-              transition={{ duration: 0.18 }}
-              className="flex items-center gap-2.5 overflow-hidden"
-            >
-              <div className="w-7 h-7 rounded-lg bg-brand-600/20 border border-brand-500/30 text-brand-400 flex items-center justify-center shrink-0">
-                <Building2 className="w-3.5 h-3.5" />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-white leading-tight">Govt Intelligence</p>
-                <p className="text-[9px] text-navy-400 font-medium">State Skill Mission</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {sidebarOpen && (
+          <div className="flex items-center gap-2.5 overflow-hidden">
+            <div className="w-7 h-7 rounded-lg bg-brand-600/20 border border-brand-500/30 text-brand-400 flex items-center justify-center shrink-0">
+              <Building2 className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-white leading-tight">Govt Intelligence</p>
+              <p className="text-[9px] text-navy-400 font-medium">State Skill Mission</p>
+            </div>
+          </div>
+        )}
         <button
           onClick={toggleSidebar}
-          className={`p-1.5 rounded-lg text-navy-400 hover:text-white hover:bg-navy-800 transition-all duration-150 cursor-pointer shrink-0 ${
+          className={`p-1.5 rounded-lg text-navy-400 hover:text-white hover:bg-navy-800 transition-colors duration-150 cursor-pointer shrink-0 ${
             sidebarOpen ? '' : 'mx-auto'
           }`}
           title={sidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar'}
@@ -73,19 +64,12 @@ export const GovernmentSidebar: React.FC = () => {
 
           return (
             <div key={cat} className="space-y-0.5">
-              {/* Category label */}
-              <AnimatePresence>
-                {sidebarOpen && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={`px-2 py-1 text-[9px] font-bold uppercase tracking-widest ${meta.accent} mb-1`}
-                  >
-                    {meta.label}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Category label — simple CSS transition, no Framer Motion */}
+              {sidebarOpen && (
+                <div className={`px-2 py-1 text-[9px] font-bold uppercase tracking-widest ${meta.accent} mb-1`}>
+                  {meta.label}
+                </div>
+              )}
 
               {items.map(item => {
                 // Dynamic badge counts
@@ -108,7 +92,7 @@ export const GovernmentSidebar: React.FC = () => {
                     end={item.path === '/dashboard/government'}
                     title={!sidebarOpen ? item.label : undefined}
                     className={({ isActive }) =>
-                      `relative flex items-center rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer group ${
+                      `relative flex items-center rounded-xl text-xs font-medium transition-colors duration-150 cursor-pointer group ${
                         sidebarOpen
                           ? 'px-3 py-2.5 gap-3 justify-between'
                           : 'px-0 py-2.5 justify-center'
@@ -163,19 +147,12 @@ export const GovernmentSidebar: React.FC = () => {
       <div className="border-t border-navy-800/70 px-3 py-3">
         <div className={`flex items-center ${sidebarOpen ? 'gap-2.5' : 'justify-center'}`}>
           <div className="w-2 h-2 rounded-full bg-success-400 animate-pulse shrink-0" title="System Online" />
-          <AnimatePresence>
-            {sidebarOpen && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <p className="text-[11px] font-semibold text-slate-300 leading-tight">System Online</p>
-                <p className="text-[9px] text-navy-400">v2.6.0 · Live Data</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {sidebarOpen && (
+            <div className="overflow-hidden">
+              <p className="text-[11px] font-semibold text-slate-300 leading-tight">System Online</p>
+              <p className="text-[9px] text-navy-400">v2.6.0 · Live Data</p>
+            </div>
+          )}
         </div>
       </div>
     </aside>

@@ -78,7 +78,7 @@ export const TraineeSidebar: React.FC = () => {
                   }`}
                 >
                   <div className={`flex items-center ${sidebarOpen ? 'gap-3' : 'justify-center'}`}>
-                    <span className="text-base shrink-0 group-hover:scale-110 transition-transform">{item.icon}</span>
+                    <span className="text-base shrink-0">{item.icon}</span>
                     {sidebarOpen && <span className="truncate tracking-wide">{item.label}</span>}
                   </div>
 

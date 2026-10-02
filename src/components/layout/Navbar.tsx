@@ -178,7 +178,7 @@ export const Navbar: React.FC = () => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 6, scale: 0.97 }}
                 transition={{ duration: 0.15, ease: 'easeOut' }}
-                className="absolute right-0 top-full mt-2 w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-panel border border-[#D9E2EF] py-2 z-50 overflow-hidden"
+                className="absolute right-0 top-full mt-2 w-72 bg-white/98 backdrop-blur-sm rounded-2xl shadow-panel border border-[#D9E2EF] py-2 z-50 overflow-hidden"
               >
                 {/* User info header */}
                 <div className="px-4 py-3 border-b border-[#F0F4F9]">

@@ -24,7 +24,7 @@ export const TraineeDashboardLayout: React.FC = () => {
       <Navbar />
       <div className="flex-1 flex overflow-hidden">
         <TraineeSidebar />
-        <main className="flex-1 overflow-y-auto bg-slate-50/60 backdrop-blur-[2px] p-4 md:p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto bg-[#F5F8FC] p-4 md:p-8 custom-scrollbar">
           <Outlet />
         </main>
       </div>
