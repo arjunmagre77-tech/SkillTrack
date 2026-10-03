@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
-import { FUNNEL_DATA, WAGE_PROGRESSION_TREND, UNEMPLOYMENT_REASONS_AGGREGATED } from '../data/mockData';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  MapPin, 
-  Building, 
-  Users, 
-  Award, 
-  Briefcase, 
-  Clock, 
-  HelpCircle,
-  RefreshCw,
-  Target
+import {
+  BarChart3,
+  TrendingUp,
+  MapPin,
+  Building,
+  Users,
+  Award,
+  Briefcase,
+  Calendar,
+  CheckCircle2,
+  Lightbulb,
+  ArrowRight,
+  Target,
+  CircleDot,
+  Factory,
+  Coins
 } from 'lucide-react';
-import { 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  PieChart, 
-  Pie, 
-  Cell 
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip
 } from 'recharts';
-import { GovPageHeader } from './OverviewPage';
 
 export const ProgramImpactDashboardPage: React.FC = () => {
   const { districts, providers, programs, selectedDistrict, setSelectedDistrict } = useApp();
@@ -39,315 +38,479 @@ export const ProgramImpactDashboardPage: React.FC = () => {
   const [filterGender, setFilterGender] = useState('ALL');
   const [filterStatus, setFilterStatus] = useState('ALL');
 
-  const currentDistrictObj = districts.find(d => d.district === selectedDistrict) || districts[0];
-
-  const kpis = [
-    { title: 'Total Trained', value: '1,25,000', change: '+12% vs LY', color: 'border-l-blue-500', iconColor: 'text-blue-600 bg-blue-50', icon: <Users className="w-5 h-5" />, textColor: 'text-blue-600' },
-    { title: 'Certified', value: '98,000', change: '78.4% Certification', color: 'border-l-emerald-500', iconColor: 'text-emerald-600 bg-emerald-50', icon: <Award className="w-5 h-5" />, textColor: 'text-emerald-600' },
-    { title: 'Employed Outcome', value: '62.0%', change: '77,500 Placed Trainees', color: 'border-l-purple-500', iconColor: 'text-purple-600 bg-purple-50', icon: <Briefcase className="w-5 h-5" />, textColor: 'text-purple-600' },
-    { title: '6-Month Retention', value: '71.0%', change: 'Sustained Employment', color: 'border-l-teal-500', iconColor: 'text-teal-600 bg-teal-50', icon: <RefreshCw className="w-5 h-5" />, textColor: 'text-teal-600' },
-    { title: 'Avg Starting Salary', value: '₹24,500', change: 'INR per month', color: 'border-l-amber-500', iconColor: 'text-amber-600 bg-amber-50', icon: <TrendingUp className="w-5 h-5" />, textColor: 'text-amber-600' },
-    { title: 'Self-Employed', value: '18.0%', change: 'Entrepreneurs & Freelancers', color: 'border-l-indigo-500', iconColor: 'text-indigo-600 bg-indigo-50', icon: <Building className="w-5 h-5" />, textColor: 'text-indigo-600' },
-    { title: 'Apprenticeships', value: '8.0%', change: 'Under Industry Training', color: 'border-l-cyan-500', iconColor: 'text-cyan-600 bg-cyan-50', icon: <Clock className="w-5 h-5" />, textColor: 'text-cyan-600' },
-    { title: 'Avg Skill-Gap Reduction', value: '32.0%', change: 'Industry alignment', color: 'border-l-rose-500', iconColor: 'text-rose-600 bg-rose-50', icon: <Target className="w-5 h-5" />, textColor: 'text-rose-600' },
+  // Overall Impact Trend Line Chart Data (Jan - Jun)
+  const impactTrendData = [
+    { month: 'Jan', trained: 25000, certified: 18000, employed: 11000 },
+    { month: 'Feb', trained: 45000, certified: 34000, employed: 22000 },
+    { month: 'Mar', trained: 68000, certified: 52000, employed: 36000 },
+    { month: 'Apr', trained: 92000, certified: 71000, employed: 49000 },
+    { month: 'May', trained: 110000, certified: 85000, employed: 64000 },
+    { month: 'Jun', trained: 125000, certified: 98000, employed: 77500 },
   ];
 
-  const selectClass = "w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-[#0D1B3E] focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm";
+  const selectContainerClass = "bg-white border border-slate-200/90 rounded-xl p-2.5 shadow-2xs space-y-1";
+  const selectClass = "w-full bg-transparent text-xs font-bold text-[#0D1B3E] focus:outline-none cursor-pointer";
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Page Header */}
-      <GovPageHeader
-        icon={<BarChart3 className="w-4 h-4" />}
-        label="Government & Policy Intelligence"
-        title="Program Impact Dashboard"
-        subtitle="Macro skilling outcome evaluation • Employment conversion • Retention & wage growth • Provider performance"
-        jurisdiction={`${filterState} (State Level)`}
-      />
-
-      {/* Filters Bar */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider flex items-center gap-1">
-              <MapPin className="w-3 h-3" /> State / Region
-            </label>
-            <select value={filterState} onChange={e => setFilterState(e.target.value)} className={selectClass}>
-              <option value="Maharashtra">Maharashtra</option>
-              <option value="National">National Aggregate</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider flex items-center gap-1">
-              <MapPin className="w-3 h-3" /> District
-            </label>
-            <select value={selectedDistrict} onChange={e => setSelectedDistrict(e.target.value)} className={selectClass}>
-              <option value="ALL">All Districts</option>
-              {districts.map(d => <option key={d.district} value={d.district}>{d.district}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider flex items-center gap-1">
-              <Building className="w-3 h-3" /> Training Provider
-            </label>
-            <select value={filterProvider} onChange={e => setFilterProvider(e.target.value)} className={selectClass}>
-              <option value="ALL">All Providers</option>
-              {providers.map(p => <option key={p.id} value={p.id}>{p.name.split(' ')[0]}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider flex items-center gap-1">
-              <Award className="w-3 h-3" /> Course Sector
-            </label>
-            <select value={filterCourse} onChange={e => setFilterCourse(e.target.value)} className={selectClass}>
-              <option value="ALL">All Sectors</option>
-              {programs.map(pr => <option key={pr.id} value={pr.id}>{pr.title.split(' ')[0]}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider flex items-center gap-1">
-              <Users className="w-3 h-3" /> Gender Group
-            </label>
-            <select value={filterGender} onChange={e => setFilterGender(e.target.value)} className={selectClass}>
-              <option value="ALL">All Genders</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider flex items-center gap-1">
-              <RefreshCw className="w-3 h-3" /> Outcome Status
-            </label>
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className={selectClass}>
-              <option value="ALL">All Statuses</option>
-              <option value="Employed">Employed</option>
-              <option value="Retained">6M Retained</option>
-              <option value="Self-Employed">Self-Employed</option>
-            </select>
-          </div>
+    <div className="space-y-5 pb-12">
+      {/* HEADER BANNER — Matching Image 2 */}
+      <div className="relative bg-[#0B1528] text-white rounded-2xl p-6 md:p-8 overflow-hidden border border-[#172642] shadow-md">
+        {/* Decorative ambient gradients & India/bar chart graphic watermark */}
+        <div className="absolute -right-12 -top-12 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute right-4 bottom-2 opacity-25 hidden md:flex items-end gap-2.5 pointer-events-none select-none">
+          <div className="w-5 h-12 bg-blue-400 rounded-t-md"></div>
+          <div className="w-5 h-20 bg-blue-400 rounded-t-md"></div>
+          <div className="w-5 h-28 bg-blue-400 rounded-t-md"></div>
+          <div className="w-5 h-38 bg-blue-400 rounded-t-md"></div>
+          {/* Subtle curved upward arrow */}
+          <svg className="absolute -top-6 -left-10 w-48 h-48 text-blue-400" viewBox="0 0 100 100" fill="none">
+            <path d="M 15 85 Q 50 65 78 18" stroke="currentColor" strokeWidth="3.5" fill="none" />
+            <path d="M 66 18 L 80 18 L 78 32" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
-      </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {kpis.map((kpi, idx) => (
-          <div key={idx} className={`bg-white rounded-2xl border border-slate-200 border-l-4 ${kpi.color} p-5 shadow-sm hover:shadow-md transition space-y-2`}>
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{kpi.title}</span>
-              <div className={`p-2 rounded-xl ${kpi.iconColor}`}>{kpi.icon}</div>
-            </div>
-            <div className="text-2xl font-black text-[#0D1B3E] tracking-tight">{kpi.value}</div>
-            <div className={`text-[11px] font-bold ${kpi.textColor} flex items-center gap-1`}>
-              <TrendingUp className="w-3 h-3" />{kpi.change}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Employment Outcome Funnel */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div>
-              <h3 className="text-sm font-extrabold text-[#0D1B3E] flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-blue-600" />
-                Employment Outcome Conversion Funnel
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">Longitudinal attrition from enrollment to 12-month retention</p>
-            </div>
-            <span className="text-[10px] bg-blue-50 text-blue-700 font-bold px-2.5 py-1 rounded-full border border-blue-100">INV-09</span>
-          </div>
-          <div className="space-y-3 pt-1">
-            {FUNNEL_DATA.map((step, idx) => (
-              <div key={idx} className="space-y-1">
-                <div className="flex items-center justify-between text-xs font-medium">
-                  <span className="text-slate-700 font-bold">{step.stage}</span>
-                  <span className="text-[#0D1B3E] font-extrabold">{step.count.toLocaleString()} ({step.percentage}%)</span>
-                </div>
-                <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                  <div 
-                    className="h-full rounded-full bg-gradient-to-r from-[#1565C0] to-[#42a5f5] transition-all duration-700" 
-                    style={{ width: `${step.percentage}%` }}
-                  />
-                </div>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-4">
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                <BarChart3 className="w-4 h-4" />
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Wage Progression */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div>
-              <h3 className="text-sm font-extrabold text-[#0D1B3E] flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-emerald-600" />
-                Wage Progression & Retention Curve
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">Starting ₹20,000 → 6M ₹23,000 → 12M ₹27,000 → 18M ₹31,000</p>
+              <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">
+                GOVERNMENT & POLICY INTELLIGENCE
+              </span>
             </div>
-            <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-full border border-emerald-100">INV-10</span>
+            <h1 className="text-2xl md:text-3.5xl font-black text-white tracking-tight leading-tight">
+              Program Impact Dashboard
+            </h1>
+            <p className="text-xs md:text-sm text-slate-300 font-normal max-w-3xl leading-relaxed">
+              Macro skilling outcome evaluation • Employment conversion • Retention & wage growth • Provider performance
+            </p>
           </div>
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={WAGE_PROGRESSION_TREND}>
-                <defs>
-                  <linearGradient id="wageGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="milestone" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 10 }} domain={[15000, 45000]} />
-                <Tooltip formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, 'Avg Salary']} />
-                <Area type="monotone" dataKey="avgSalary" stroke="#059669" strokeWidth={3} fillOpacity={1} fill="url(#wageGradient)" />
-                <Area type="monotone" dataKey="topQuartile" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" fill="none" />
-              </AreaChart>
-            </ResponsiveContainer>
+
+          <div className="shrink-0 inline-flex items-center gap-2 bg-[#12223D]/90 border border-[#203960] rounded-xl px-3.5 py-2 text-xs font-semibold text-white shadow-sm">
+            <MapPin className="w-3.5 h-3.5 text-blue-400" />
+            <span className="text-slate-400 font-normal">Jurisdiction:</span>
+            <span className="font-bold text-blue-200">{filterState} (State Level)</span>
           </div>
         </div>
       </div>
 
-      {/* Provider Analytics & District Heatmap */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Provider Analytics Table */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div>
-              <h3 className="text-sm font-extrabold text-[#0D1B3E] flex items-center gap-2">
-                <Building className="w-4 h-4 text-purple-600" />
-                Training Provider Outcome Indicators
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">Comparative neutral performance indicators (INV-11)</p>
-            </div>
-            <span className="text-[10px] bg-purple-50 text-purple-700 font-bold px-2.5 py-1 rounded-full border border-purple-100">INV-11</span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 text-[10px] uppercase tracking-wider">
-                <tr>
-                  <th className="p-2.5">Provider</th>
-                  <th className="p-2.5">Trained</th>
-                  <th className="p-2.5">Certified</th>
-                  <th className="p-2.5">Employed</th>
-                  <th className="p-2.5">Conv%</th>
-                  <th className="p-2.5">Ret%</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {providers.map(p => (
-                  <tr key={p.id} className="hover:bg-slate-50 transition">
-                    <td className="p-2.5 font-bold text-[#0D1B3E] max-w-[100px] truncate">{p.name.split(' ').slice(0,2).join(' ')}</td>
-                    <td className="p-2.5">{p.trained.toLocaleString()}</td>
-                    <td className="p-2.5">{p.certified.toLocaleString()}</td>
-                    <td className="p-2.5 font-semibold text-emerald-700">{p.employed.toLocaleString()}</td>
-                    <td className="p-2.5 font-bold text-blue-700">{p.conversionRate}%</td>
-                    <td className="p-2.5 font-bold text-teal-700">{p.retentionRate}%</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {/* 6 FILTERS BAR — Matching Image 2 */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        {/* Filter 1: State / Region */}
+        <div className={selectContainerClass}>
+          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <MapPin className="w-3 h-3 text-slate-400" /> STATE / REGION
+          </label>
+          <select value={filterState} onChange={e => setFilterState(e.target.value)} className={selectClass}>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="National">National Aggregate</option>
+          </select>
         </div>
 
-        {/* District Intelligence */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div>
-              <h3 className="text-sm font-extrabold text-[#0D1B3E] flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-rose-600" />
-                District Skill & Employment Intelligence
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">Interactive Maharashtra district outcome selector (INV-12)</p>
-            </div>
-            <span className="text-[10px] bg-rose-50 text-rose-700 font-bold px-2.5 py-1 rounded-full border border-rose-100">INV-12</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
+        {/* Filter 2: District */}
+        <div className={selectContainerClass}>
+          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <MapPin className="w-3 h-3 text-slate-400" /> DISTRICT
+          </label>
+          <select value={selectedDistrict} onChange={e => setSelectedDistrict(e.target.value)} className={selectClass}>
+            <option value="Pune">Pune</option>
+            <option value="ALL">All Districts</option>
             {districts.map(d => (
-              <button
-                key={d.district}
-                onClick={() => setSelectedDistrict(d.district)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
-                  selectedDistrict === d.district
-                    ? 'bg-[#1565C0] text-white shadow-md'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                {d.district} ({d.employmentRate}%)
-              </button>
+              <option key={d.district} value={d.district}>{d.district}</option>
             ))}
-          </div>
-          <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-extrabold text-[#0D1B3E]">{currentDistrictObj.district} District Detail</h4>
-              <span className="text-xs font-bold text-emerald-600">{currentDistrictObj.employmentRate}% Employment Rate</span>
+          </select>
+        </div>
+
+        {/* Filter 3: Training Provider */}
+        <div className={selectContainerClass}>
+          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <Building className="w-3 h-3 text-slate-400" /> TRAINING PROVIDER
+          </label>
+          <select value={filterProvider} onChange={e => setFilterProvider(e.target.value)} className={selectClass}>
+            <option value="ALL">All Providers</option>
+            {providers.map(p => (
+              <option key={p.id} value={p.id}>{p.name.split(' ')[0]}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Filter 4: Course Sector */}
+        <div className={selectContainerClass}>
+          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <Award className="w-3 h-3 text-slate-400" /> COURSE SECTOR
+          </label>
+          <select value={filterCourse} onChange={e => setFilterCourse(e.target.value)} className={selectClass}>
+            <option value="ALL">All Sectors</option>
+            {programs.map(pr => (
+              <option key={pr.id} value={pr.id}>{pr.category}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Filter 5: Gender Group */}
+        <div className={selectContainerClass}>
+          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <Users className="w-3 h-3 text-slate-400" /> GENDER GROUP
+          </label>
+          <select value={filterGender} onChange={e => setFilterGender(e.target.value)} className={selectClass}>
+            <option value="ALL">All Genders</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        {/* Filter 6: Outcome Status */}
+        <div className={selectContainerClass}>
+          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3 text-slate-400" /> OUTCOME STATUS
+          </label>
+          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className={selectClass}>
+            <option value="ALL">All Statuses</option>
+            <option value="Employed">Employed</option>
+            <option value="Certified">Certified</option>
+            <option value="Retained">6M Retained</option>
+          </select>
+        </div>
+      </div>
+
+      {/* 8 KPI CARDS (2 rows of 4) — Matching Image 2 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 1. TOTAL TRAINED */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 border-t-4 border-t-blue-500 p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <Users className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">TOTAL TRAINED</span>
             </div>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-2.5 bg-white rounded-xl border border-slate-200">
-                <span className="text-slate-500 text-[10px] block font-medium">Top Regional Skill Gap:</span>
-                <strong className="text-rose-700 font-bold">{currentDistrictObj.topSkillGap}</strong>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl md:text-3xl font-black text-[#0D1B3E] tracking-tight">1,25,000</div>
+              <div className="flex items-center gap-1 mt-1 text-xs font-semibold text-emerald-600">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>+12% vs LY</span>
               </div>
-              <div className="p-2.5 bg-white rounded-xl border border-slate-200">
-                <span className="text-slate-500 text-[10px] block font-medium">6-Month Retention:</span>
-                <strong className="text-teal-700 font-bold">{currentDistrictObj.retentionRate}%</strong>
+            </div>
+            {/* Wave sparkline */}
+            <div className="w-20 h-8">
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 100 35">
+                <path
+                  d="M0 28 Q 25 32, 45 20 T 75 14 T 100 4"
+                  fill="none"
+                  stroke="#3B82F6"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. CERTIFIED */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 border-t-4 border-t-emerald-500 p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <Award className="w-4 h-4" />
               </div>
-              <div className="p-2.5 bg-white rounded-xl border border-slate-200">
-                <span className="text-slate-500 text-[10px] block font-medium">Local Job Availability Score:</span>
-                <strong className="text-blue-700 font-bold">{currentDistrictObj.localJobAvailabilityScore} / 100</strong>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CERTIFIED</span>
+            </div>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl md:text-3xl font-black text-[#0D1B3E] tracking-tight">98,000</div>
+              <div className="flex items-center gap-1 mt-1 text-xs font-semibold text-emerald-600">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>+78.4% Certification</span>
               </div>
-              <div className="p-2.5 bg-white rounded-xl border border-slate-200">
-                <span className="text-slate-500 text-[10px] block font-medium">Total Candidates Trained:</span>
-                <strong className="text-[#0D1B3E] font-bold">{currentDistrictObj.trained.toLocaleString()}</strong>
+            </div>
+            {/* Circular Gauge 78% */}
+            <div className="relative w-11 h-11 shrink-0 flex items-center justify-center">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                <path
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#E2E8F0"
+                  strokeWidth="3.5"
+                />
+                <path
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="3.5"
+                  strokeDasharray="78, 100"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="absolute text-[10px] font-bold text-[#0D1B3E]">78%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. EMPLOYED OUTCOME */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 border-t-4 border-t-purple-500 p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                <Briefcase className="w-4 h-4" />
               </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">EMPLOYED OUTCOME</span>
+            </div>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl md:text-3xl font-black text-[#0D1B3E] tracking-tight">62.0%</div>
+              <div className="flex items-center gap-1 mt-1 text-xs font-semibold text-purple-700">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>77,500 Placed Trainees</span>
+              </div>
+            </div>
+            {/* Mini vertical bars */}
+            <div className="flex items-end gap-1.5 h-7">
+              <div className="w-1.5 h-3 bg-purple-200 rounded-t-sm"></div>
+              <div className="w-1.5 h-4.5 bg-purple-300 rounded-t-sm"></div>
+              <div className="w-1.5 h-6 bg-purple-400 rounded-t-sm"></div>
+              <div className="w-1.5 h-7 bg-purple-600 rounded-t-sm"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. 6-MONTH RETENTION */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 border-t-4 border-t-teal-500 p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                <Calendar className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">6-MONTH RETENTION</span>
+            </div>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl md:text-3xl font-black text-[#0D1B3E] tracking-tight">71.0%</div>
+              <div className="flex items-center gap-1 mt-1 text-xs font-semibold text-teal-700">
+                <span>Sustained Employment</span>
+              </div>
+            </div>
+            {/* Mini upward line */}
+            <div className="w-14 h-7">
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 60 30">
+                <path d="M5 25 L 30 18 L 55 5" fill="none" stroke="#0D9488" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M 45 5 L 55 5 L 55 15" fill="none" stroke="#0D9488" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. AVG STARTING SALARY */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 border-t-4 border-t-amber-500 p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">
+                ₹
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">AVG STARTING SALARY</span>
+            </div>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl md:text-3xl font-black text-[#0D1B3E] tracking-tight">₹24,500</div>
+              <div className="text-xs font-semibold text-slate-400 mt-1">
+                <span>INR per month</span>
+              </div>
+            </div>
+            {/* Coins illustration */}
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center">
+              <Coins className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+
+        {/* 6. SELF-EMPLOYED */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 border-t-4 border-t-indigo-500 p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <Users className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">SELF-EMPLOYED</span>
+            </div>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl md:text-3xl font-black text-[#0D1B3E] tracking-tight">18.0%</div>
+              <div className="flex items-center gap-1 mt-1 text-xs font-semibold text-indigo-700">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>Entrepreneurs & Freelancers</span>
+              </div>
+            </div>
+            <div className="w-8 h-8 text-indigo-500 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+
+        {/* 7. APPRENTICESHIPS */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 border-t-4 border-t-cyan-500 p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center">
+                <Briefcase className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">APPRENTICESHIPS</span>
+            </div>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl md:text-3xl font-black text-[#0D1B3E] tracking-tight">8.0%</div>
+              <div className="flex items-center gap-1 mt-1 text-xs font-semibold text-cyan-700">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>Under Industry Training</span>
+              </div>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center">
+              <Factory className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+
+        {/* 8. AVG SKILL-GAP REDUCTION */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 border-t-4 border-t-rose-500 p-5 shadow-2xs flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                <Target className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">AVG SKILL-GAP REDUCTION</span>
+            </div>
+          </div>
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-2xl md:text-3xl font-black text-[#0D1B3E] tracking-tight">32.0%</div>
+              <div className="flex items-center gap-1 mt-1 text-xs font-semibold text-rose-700">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>Industry alignment</span>
+              </div>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+              <Target className="w-5 h-5" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Unemployment Root Cause Analysis */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+      {/* BOTTOM ROW: OVERALL IMPACT TREND & KEY INSIGHTS — Matching Image 2 */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* LEFT (8 cols): Overall Impact Trend */}
+        <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-200/90 p-6 shadow-2xs flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-extrabold text-[#0D1B3E] flex items-center gap-2">
-              <HelpCircle className="w-4 h-4 text-amber-600" />
-              "Why Programs Are Not Producing Employment" — Aggregated Diagnostic
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">Root-cause breakdown across non-employed candidates for targeted policy intervention</p>
-          </div>
-          <button 
-            onClick={() => navigate('/dashboard/government/early-intervention')}
-            className="text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100 transition cursor-pointer shrink-0"
-          >
-            Launch Early Interventions →
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-          <div className="h-60 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={UNEMPLOYMENT_REASONS_AGGREGATED} cx="50%" cy="50%" innerRadius={50} outerRadius={85} paddingAngle={4} dataKey="percentage" nameKey="reason">
-                  {UNEMPLOYMENT_REASONS_AGGREGATED.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value: any) => [`${value}%`, 'Candidate Share']} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="space-y-2 text-xs">
-            {UNEMPLOYMENT_REASONS_AGGREGATED.map((reason, idx) => (
-              <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-slate-100 transition">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: reason.color }} />
-                  <span className="font-semibold text-slate-800">{reason.reason}</span>
-                </div>
-                <span className="font-bold text-[#0D1B3E]">{reason.percentage}%</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-blue-600" />
+                <h3 className="text-sm font-bold text-[#0D1B3E]">Overall Impact Trend</h3>
               </div>
-            ))}
+              {/* Legend */}
+              <div className="flex items-center gap-4 text-xs font-medium">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#3B82F6]"></div>
+                  <span className="text-slate-600">Trained</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#10B981]"></div>
+                  <span className="text-slate-600">Certified</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]"></div>
+                  <span className="text-slate-600">Employed</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="h-64 w-full pt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={impactTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
+                  <YAxis
+                    tick={{ fontSize: 10, fill: '#64748B' }}
+                    domain={[0, 150000]}
+                    ticks={[0, 50000, 100000, 150000]}
+                    tickFormatter={(val) => `${val / 1000}K`}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <Tooltip
+                    formatter={(val: any) => [Number(val).toLocaleString(), 'Candidates']}
+                    contentStyle={{ borderRadius: 12, border: '1px solid #E2E8F0', fontSize: 11 }}
+                  />
+                  <Line type="monotone" dataKey="trained" stroke="#3B82F6" strokeWidth={2.5} dot={{ r: 4, fill: '#3B82F6' }} />
+                  <Line type="monotone" dataKey="certified" stroke="#10B981" strokeWidth={2.5} dot={{ r: 4, fill: '#10B981' }} />
+                  <Line type="monotone" dataKey="employed" stroke="#8B5CF6" strokeWidth={2.5} dot={{ r: 4, fill: '#8B5CF6' }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT (4 cols): Key Insights */}
+        <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200/90 p-6 shadow-2xs relative overflow-hidden flex flex-col justify-between">
+          {/* Subtle curved background graphic in corner */}
+          <div className="absolute -bottom-8 -right-8 w-44 h-44 bg-gradient-to-tl from-cyan-100/50 via-blue-50/30 to-transparent rounded-full pointer-events-none" />
+
+          <div className="relative z-10 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <Lightbulb className="w-4 h-4 text-blue-600" />
+                <h3 className="text-sm font-bold text-[#0D1B3E]">Key Insights</h3>
+              </div>
+              <button
+                onClick={() => navigate('/dashboard/government/district-intelligence')}
+                className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-0.5 cursor-pointer"
+              >
+                <span>View Details</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+
+            <div className="space-y-3.5 text-xs">
+              {/* Insight 1 */}
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                </div>
+                <p className="text-slate-700 font-medium leading-snug">
+                  Training numbers increased by <span className="font-bold text-[#0D1B3E]">12%</span> compared to last year.
+                </p>
+              </div>
+
+              {/* Insight 2 */}
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <Users className="w-3.5 h-3.5" />
+                </div>
+                <p className="text-slate-700 font-medium leading-snug">
+                  Employment conversion rate improved to <span className="font-bold text-[#0D1B3E]">62.0%</span>.
+                </p>
+              </div>
+
+              {/* Insight 3 */}
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <CircleDot className="w-3.5 h-3.5" />
+                </div>
+                <p className="text-slate-700 font-medium leading-snug">
+                  Top performing sector: <span className="font-bold text-[#0D1B3E]">IT & ITeS</span> (82% placement rate).
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+export default ProgramImpactDashboardPage;
