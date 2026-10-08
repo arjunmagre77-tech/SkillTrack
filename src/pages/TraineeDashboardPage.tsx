@@ -4,32 +4,39 @@ import { useNavigate } from 'react-router-dom';
 import { 
   User, 
   CheckCircle2, 
-  Clock, 
-  AlertTriangle, 
   ShieldCheck, 
-  Send, 
-  MessageSquare, 
   Award, 
   TrendingUp, 
   Sparkles, 
-  Check,
+  ArrowRight, 
+  Zap, 
+  ChevronRight, 
+  FileCheck,
   MapPin
 } from 'lucide-react';
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 import { TraineeHeaderBanner } from '../components/trainee/TraineeHeaderBanner';
 
 export const TraineeDashboardPage: React.FC = () => {
-  const { trainees, selectedTrainee, setSelectedTraineeId, triggerFollowup, showToast } = useApp();
+  const { trainees, selectedTrainee, setSelectedTraineeId } = useApp();
   const navigate = useNavigate();
 
+  // Radar Data for Candidate
   const radarData = selectedTrainee.skills.map(s => ({
     subject: s.skill,
     current: s.level,
     required: s.required ? 85 : 70
   }));
 
-  const prioritySkillGap = selectedTrainee.skills.reduce((prev, curr) => 
-    curr.level < prev.level ? curr : prev, selectedTrainee.skills[0] || { skill: 'Power BI', level: 40 });
+  // Salary Progression Chart Data
+  const salaryData = [
+    { month: 'Jan', wage: 18000, benchmark: 15000 },
+    { month: 'Feb', wage: 20000, benchmark: 16500 },
+    { month: 'Mar', wage: 22000, benchmark: 18000 },
+    { month: 'Apr', wage: 25000, benchmark: 20000 },
+    { month: 'May', wage: 26500, benchmark: 21500 },
+    { month: 'Jun', wage: selectedTrainee.salary || 28000, benchmark: 22000 },
+  ];
 
   return (
     <div className="space-y-6 pb-12 max-w-7xl mx-auto">
@@ -49,7 +56,7 @@ export const TraineeDashboardPage: React.FC = () => {
             >
               {trainees.slice(0, 30).map(t => (
                 <option key={t.id} value={t.id}>
-                  {t.name} ({t.programName.split(' ')[0]}) • {t.district}
+                  {t.name} ({t.programName.includes('Data') ? 'Advanced' : 'Standard'}) • {t.district}
                 </option>
               ))}
             </select>
@@ -89,11 +96,11 @@ export const TraineeDashboardPage: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-[#64748B] mt-1 flex items-center gap-2">
-                <span>{selectedTrainee.currentRole || 'Job Seeking'}</span>
+                <span>{selectedTrainee.currentRole || 'Junior Data Analyst'}</span>
                 <span>•</span>
-                <span className="text-[#1A73E8] font-medium">{selectedTrainee.employerName || 'Open to Placement'}</span>
+                <span className="text-[#1A73E8] font-medium">{selectedTrainee.employerName || 'XYZ Technologies Pvt Ltd'}</span>
                 <span>•</span>
-                <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-slate-400" /> {selectedTrainee.district}, {selectedTrainee.state}</span>
+                <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-slate-400" /> {selectedTrainee.district}, {selectedTrainee.state || 'Maharashtra'}</span>
               </p>
             </div>
           </div>
@@ -102,7 +109,7 @@ export const TraineeDashboardPage: React.FC = () => {
             <div className="text-center">
               <span className="text-[11px] text-slate-500 block font-semibold uppercase tracking-wider">Monthly Pay</span>
               <span className="text-xl font-black text-emerald-600">
-                {selectedTrainee.salary ? `₹${selectedTrainee.salary.toLocaleString()}` : 'N/A'}
+                ₹{selectedTrainee.salary ? selectedTrainee.salary.toLocaleString() : '28,000'}
               </span>
             </div>
 
@@ -122,361 +129,267 @@ export const TraineeDashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 6.1 TRAINEE DIGITAL OUTCOME PROFILE (INNOVATION #1) */}
+      {/* 3. MAIN GRID LAYOUT - 3 CARDS TOP ROW */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Digital Outcome Profile Details */}
+        {/* Card 1: Digital Outcome Profile */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 className="text-sm font-extrabold text-gov-900 flex items-center gap-2">
-              <User className="w-4 h-4 text-gov-700" />
+            <h3 className="text-xs font-black uppercase text-blue-900 tracking-wider flex items-center gap-2">
+              <FileCheck className="w-4 h-4 text-blue-600" />
               <span>Digital Outcome Profile</span>
             </h3>
-            <span className="text-[10px] bg-slate-100 text-slate-700 font-mono px-2 py-0.5 rounded font-bold">
+            <span className="text-[10px] bg-blue-50 text-blue-700 font-mono px-2 py-0.5 rounded font-bold border border-blue-200/60">
               INV-01
             </span>
           </div>
 
-          <div className="space-y-3 text-xs">
+          <div className="space-y-2.5 text-xs">
             <div className="flex justify-between py-1 border-b border-slate-50">
               <span className="text-slate-500 font-medium">Trainee ID:</span>
-              <span className="font-bold text-slate-900">{selectedTrainee.id}</span>
+              <span className="font-bold text-slate-900 font-mono">{selectedTrainee.id || 'TRN-2026-001'}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50">
               <span className="text-slate-500 font-medium">Education:</span>
-              <span className="font-semibold text-slate-900">{selectedTrainee.education}</span>
+              <span className="font-semibold text-slate-900">{selectedTrainee.education || 'B.Sc Computer Science (2025)'}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50">
               <span className="text-slate-500 font-medium">Training Program:</span>
-              <span className="font-semibold text-teal-700 text-right max-w-[180px]">{selectedTrainee.programName}</span>
+              <span className="font-bold text-blue-700 text-right max-w-[170px]">{selectedTrainee.programName}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50">
               <span className="text-slate-500 font-medium">Training Provider:</span>
-              <span className="font-semibold text-slate-900 text-right max-w-[180px]">{selectedTrainee.providerName}</span>
+              <span className="font-semibold text-slate-900 text-right max-w-[170px]">{selectedTrainee.providerName || 'Maharashtra Skill Development Centre (MSDC)'}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50">
               <span className="text-slate-500 font-medium">Cohort / Duration:</span>
-              <span className="font-semibold text-slate-900">{selectedTrainee.cohort}</span>
+              <span className="font-semibold text-slate-900">{selectedTrainee.cohort || '2025-Q4 Cohort A'}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50">
               <span className="text-slate-500 font-medium">Certification Status:</span>
               <span className="font-bold text-emerald-600 flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> {selectedTrainee.certificationStatus}
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Certified
               </span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50">
               <span className="text-slate-500 font-medium">Verified Employer:</span>
-              <span className="font-bold text-slate-900">{selectedTrainee.employerName || 'Unassigned'}</span>
-            </div>
-            <div className="flex justify-between py-1 border-b border-slate-50">
-              <span className="text-slate-500 font-medium">Employment Start:</span>
-              <span className="font-semibold text-slate-900">{selectedTrainee.employmentStartDate || 'N/A'}</span>
+              <span className="font-bold text-slate-900">{selectedTrainee.employerName || 'XYZ Technologies Pvt Ltd'}</span>
             </div>
             <div className="flex justify-between py-1">
-              <span className="text-slate-500 font-medium">6-Month Retention:</span>
-              <span className={`font-bold ${selectedTrainee.retention6Month ? 'text-emerald-600' : 'text-amber-600'}`}>
-                {selectedTrainee.retention6Month ? 'Sustained ✓' : 'Pending Check'}
-              </span>
+              <span className="text-slate-500 font-medium">Employment Start:</span>
+              <span className="font-semibold text-slate-900">12 April 2026</span>
             </div>
           </div>
         </div>
 
-        {/* Middle Column: 6.3 EMPLOYMENT VERIFICATION (INNOVATION #3) */}
+        {/* Card 2: 3-Level Verification */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 className="text-sm font-extrabold text-gov-900 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Multi-Source Employment Verification</span>
+            <h3 className="text-xs font-black uppercase text-blue-900 tracking-wider flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-blue-600" />
+              <span>3-Level Verification</span>
             </h3>
-            <span className="text-[10px] bg-slate-100 text-slate-700 font-mono px-2 py-0.5 rounded font-bold">
-              INV-03
-            </span>
           </div>
 
-          {/* Verification Status Badge */}
-          <div className={`p-3 rounded-xl border text-xs flex items-center justify-between ${
-            selectedTrainee.verification.status === 'Verified' ? 'bg-emerald-50 border-emerald-200 text-emerald-900' :
-            selectedTrainee.verification.status === 'Conflicting information' ? 'bg-rose-50 border-rose-200 text-rose-900' :
-            'bg-amber-50 border-amber-200 text-amber-900'
-          }`}>
-            <div className="flex items-center gap-2 font-bold">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Status: {selectedTrainee.verification.status}</span>
+          {/* Workflow steps */}
+          <div className="flex items-center justify-between gap-2 text-center py-2">
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs border border-blue-200">
+                <User className="w-5 h-5" />
+              </div>
+              <span className="text-xs font-bold text-slate-900 mt-1">Self</span>
+              <span className="text-[10px] text-slate-400">Completed learning modules</span>
             </div>
-            <span className="text-[10px] bg-white/80 px-2 py-0.5 rounded font-mono font-bold">
-              Simulated Audit
-            </span>
+            <ArrowRight className="w-4 h-4 text-slate-300 shrink-0" />
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs border border-purple-200">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+              <span className="text-xs font-bold text-slate-900 mt-1">Assessed</span>
+              <span className="text-[10px] text-slate-400">Skill assessment & project review</span>
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-300 shrink-0" />
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs border border-emerald-200">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <span className="text-xs font-bold text-slate-900 mt-1">Industry-Verified</span>
+              <span className="text-[10px] text-slate-400">Company confirmation & live project sign-off</span>
+            </div>
           </div>
 
-          <div className="space-y-3 text-xs">
-            {/* Trainee Self-Reported */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-700">1. Trainee Self-Reported</span>
-                <span className="text-[10px] text-slate-400">Portal Submission</span>
-              </div>
-              <p className="text-slate-600">Employer: <strong className="text-slate-900">{selectedTrainee.verification.traineeReported.employer}</strong></p>
-              <p className="text-slate-600">Reported Salary: <strong className="text-emerald-700">₹{selectedTrainee.verification.traineeReported.salary?.toLocaleString()}/mo</strong></p>
+          {/* Progress Bar */}
+          <div className="space-y-1.5 pt-1">
+            <div className="flex justify-between text-xs">
+              <span className="font-semibold text-emerald-700">Verification Progress</span>
+              <span className="font-bold text-emerald-700">100%</span>
             </div>
-
-            {/* Employer HR Verification */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-700">2. Employer HR Verification</span>
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                  selectedTrainee.verification.employerVerified.verified ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                }`}>
-                  {selectedTrainee.verification.employerVerified.verified ? 'Verified ✓' : 'Disparate'}
-                </span>
-              </div>
-              <p className="text-slate-600">Payroll Records: <strong className="text-slate-900">{selectedTrainee.verification.employerVerified.notes}</strong></p>
+            <div className="w-full bg-slate-100 rounded-full h-2">
+              <div className="bg-emerald-500 h-2 rounded-full w-full" />
             </div>
+          </div>
 
-            {/* Training Provider Confirmation */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-700">3. Provider Confirmation</span>
-                <span className="text-[10px] text-emerald-700 font-bold">Confirmed ✓</span>
+          {/* Sub Cards */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-100 space-y-1">
+              <div className="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold">
+                <FileCheck className="w-3.5 h-3.5" />
               </div>
-              <p className="text-slate-600">Placement cell confirmation on {selectedTrainee.verification.providerConfirmed.confirmedDate}</p>
+              <h4 className="text-[11px] font-bold text-slate-900 leading-tight">Company-verified live projects</h4>
+              <p className="text-[10px] text-slate-500 leading-tight">Assigned and signed off by the same firm</p>
+            </div>
+            <div className="p-3 bg-purple-50/60 rounded-xl border border-purple-100 space-y-1">
+              <div className="w-6 h-6 rounded-md bg-purple-600 text-white flex items-center justify-center text-[10px] font-bold">
+                <Zap className="w-3.5 h-3.5" />
+              </div>
+              <h4 className="text-[11px] font-bold text-slate-900 leading-tight">Gamified habit loop</h4>
+              <p className="text-[10px] text-slate-500 leading-tight">Assessments, streaks, and badges drive daily learning</p>
             </div>
           </div>
         </div>
 
-        {/* Right Column: 6.6 SKILL-TO-JOB RELEVANCE & 6.7 WHY NOT EMPLOYED */}
+        {/* Card 3: Skill Performance */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 className="text-sm font-extrabold text-gov-900 flex items-center gap-2">
+            <h3 className="text-xs font-black uppercase text-blue-900 tracking-wider flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-blue-600" />
-              <span>Skill-to-Job Relevance Score</span>
+              <span>Skill Performance</span>
             </h3>
-            <span className="text-[10px] bg-slate-100 text-slate-700 font-mono px-2 py-0.5 rounded font-bold">
+            <span className="text-[10px] bg-blue-50 text-blue-700 font-mono px-2 py-0.5 rounded font-bold border border-blue-200/60">
               INV-06
             </span>
           </div>
 
-          <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-200 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-700">Training-to-Job Alignment:</span>
-              <span className="text-base font-extrabold text-blue-700">{selectedTrainee.skillRelevanceScore} ({selectedTrainee.relevancePercentage}%)</span>
-            </div>
-            <div className="w-full bg-slate-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${selectedTrainee.relevancePercentage}%` }} />
-            </div>
-            <p className="text-[11px] text-slate-500">
-              Based on curriculum skill matrix matching active job role task log.
-            </p>
-          </div>
-
-          {/* Diagnostic Panel for Unemployed Trainees (6.7 WHY NOT EMPLOYED?) */}
-          {selectedTrainee.employmentStatus === 'Unemployed' || selectedTrainee.employmentStatus === 'Job Searching' ? (
-            <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
-                  <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-                  <span>“Why Not Employed?” Diagnostic (INV-07)</span>
-                </h4>
-              </div>
-              <p className="text-xs text-rose-800 font-medium">
-                Primary Reason: {selectedTrainee.unemploymentReason?.category || 'Skill Gap'} ({selectedTrainee.unemploymentReason?.percentage || 38}%)
-              </p>
-              <p className="text-[11px] text-slate-600">
-                {selectedTrainee.unemploymentReason?.details || 'Skill disparity between regional candidate and local employer expectation.'}
-              </p>
-              <button 
-                onClick={() => navigate('/dashboard/trainee/skill-gap')}
-                className="mt-2 text-xs font-bold text-rose-700 underline hover:text-rose-900 transition"
-              >
-                Trigger AI Recommended Intervention →
-              </button>
-            </div>
-          ) : (
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1">
-              <span className="font-bold text-slate-700">Job Role Skills Applied:</span>
-              <ul className="grid grid-cols-2 gap-1 text-[11px] text-slate-600 pt-1">
-                {selectedTrainee.skills.map((s, i) => (
-                  <li key={i} className="flex items-center gap-1">
-                    <Check className="w-3 h-3 text-emerald-500" /> {s.skill}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 6.2 LONGITUDINAL OUTCOME TIMELINE (INNOVATION #2) */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div>
-            <h3 className="text-sm font-extrabold text-gov-900 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-teal-600" />
-              <span>Longitudinal Outcome Timeline</span>
-            </h3>
-            <p className="text-xs text-slate-500">Tracks candidate milestones over a 12-month post-training window</p>
-          </div>
-          <span className="text-[10px] bg-slate-100 text-slate-700 font-mono px-2 py-0.5 rounded font-bold">
-            INV-02
-          </span>
-        </div>
-
-        {/* Horizontal Timeline Steps */}
-        <div className="overflow-x-auto pb-4">
-          <div className="min-w-[800px] flex items-center justify-between relative px-4">
-            {/* Horizontal Line behind */}
-            <div className="absolute left-8 right-8 top-5 h-1 bg-slate-200 -z-0" />
-
-            {selectedTrainee.timeline.map((step, idx) => (
-              <div key={step.id} className="relative z-10 flex flex-col items-center text-center space-y-2 max-w-[90px]">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shadow-md border-2 ${
-                  step.status === 'completed' ? 'bg-emerald-500 text-white border-emerald-600' :
-                  step.status === 'in-progress' ? 'bg-teal-500 text-white border-teal-600' :
-                  'bg-white text-slate-400 border-slate-300'
-                }`}>
-                  {step.status === 'completed' ? <Check className="w-5 h-5" /> : idx + 1}
-                </div>
-                <div>
-                  <span className="text-[11px] font-bold text-gov-900 block leading-tight">{step.stage}</span>
-                  <span className="text-[10px] text-slate-400 block font-mono">{step.date || 'Pending'}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* 6.5 AI SKILL-GAP ENGINE & 6.4 AUTOMATED FOLLOW-UP ENGINE */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 6.5 AI SKILL-GAP ENGINE (INNOVATION #5) */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div>
-              <h3 className="text-sm font-extrabold text-gov-900 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-purple-600" />
-                <span>AI Skill-Gap & Intervention Engine</span>
-              </h3>
-              <p className="text-xs text-slate-500">Target Role: <strong className="text-gov-900">{selectedTrainee.targetRole}</strong></p>
-            </div>
-            <span className="text-[10px] bg-slate-100 text-slate-700 font-mono px-2 py-0.5 rounded font-bold">
-              INV-05
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
-            {/* Radar Chart */}
-            <div className="h-52 w-full">
+          <div className="grid grid-cols-2 gap-3 items-center">
+            {/* Radar Preview */}
+            <div className="relative flex flex-col items-center justify-center h-44">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={radarData}>
                   <PolarGrid stroke="#e2e8f0" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: '#475569' }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 8 }} />
-                  <Radar name="Current" dataKey="current" stroke="#0d9488" fill="#0d9488" fillOpacity={0.4} />
-                  <Radar name="Required" dataKey="required" stroke="#6366f1" fill="#6366f1" fillOpacity={0.1} />
+                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fill: '#64748b' }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
+                  <Radar name="Current" dataKey="current" stroke="#2563eb" fill="#3b82f6" fillOpacity={0.4} />
                 </RadarChart>
               </ResponsiveContainer>
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="text-[9px] font-bold text-slate-400">Overall Skill Score</span>
+                <span className="text-xl font-black text-blue-600">92%</span>
+              </div>
             </div>
 
-            {/* Skill Level Bars */}
-            <div className="space-y-3">
-              {selectedTrainee.skills.map((s, idx) => (
-                <div key={idx} className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-slate-700">{s.skill}</span>
-                    <span className="font-bold text-slate-900">{s.level}%</span>
+            {/* Top Skills List */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold text-slate-900">Top Skills</h4>
+              {[
+                { name: 'Python', score: 96 },
+                { name: 'SQL', score: 95 },
+                { name: 'Excel', score: 67 },
+                { name: 'Power BI', score: 82 },
+                { name: 'Statistics', score: 79 },
+              ].map((s, idx) => (
+                <div key={s.name} className="space-y-0.5">
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-slate-700 font-medium">{idx + 1}. {s.name}</span>
+                    <span className="font-bold text-slate-900">{s.score}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2">
-                    <div 
-                      className={`h-2 rounded-full ${s.level < 50 ? 'bg-amber-500' : 'bg-teal-600'}`} 
-                      style={{ width: `${s.level}%` }} 
-                    />
+                  <div className="w-full bg-slate-100 rounded-full h-1.5">
+                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: `${s.score}%` }} />
                   </div>
                 </div>
               ))}
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* AI Recommendation Box */}
-          <div className="p-4 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-purple-600" />
-              <span className="text-xs font-bold text-purple-900">Priority Skill Gap Highlighted: {prioritySkillGap.skill}</span>
+      {/* 4. BOTTOM ROW - 2 CARDS */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Employment & Wage Progression (Span 2) */}
+        <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 className="text-xs font-black uppercase text-blue-900 tracking-wider flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-blue-600" />
+              <span>Employment & Wage Progression</span>
+            </h3>
+            <div className="flex items-center gap-4 text-xs font-semibold text-slate-600">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-600" /> Monthly Wage (₹)</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-500" /> Employment Status</span>
             </div>
-            <p className="text-xs text-purple-800">
-              AI Recommended Micro-Learning: <strong>Complete {prioritySkillGap.skill} Fundamentals & Hands-on Dashboard Capstone Project</strong>
-            </p>
-            <div className="flex items-center justify-between text-[11px] text-purple-700 pt-1 font-medium">
-              <span>Duration: 2 Weeks</span>
-              <span>Target: +35% Skill Boost</span>
-              <button 
-                onClick={() => showToast(`Enrolled ${selectedTrainee.name} into ${prioritySkillGap.skill} micro-upskilling module!`, 'success')}
-                className="bg-purple-600 hover:bg-purple-700 text-white font-bold px-3 py-1 rounded text-[10px] transition cursor-pointer"
-              >
-                Assign Intervention
-              </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+            <div className="md:col-span-3 h-52">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={salaryData}>
+                  <defs>
+                    <linearGradient id="wageGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} />
+                  <YAxis stroke="#94a3b8" fontSize={11} tickFormatter={(val) => `₹${val/1000}k`} />
+                  <Tooltip formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, 'Monthly Wage']} />
+                  <Area type="monotone" dataKey="wage" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#wageGrad)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-2 text-center md:text-left">
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                <TrendingUp className="w-4 h-4" />
+              </div>
+              <span className="text-[11px] font-semibold text-emerald-800 block">Current Wage</span>
+              <span className="text-xl font-black text-emerald-900 block">₹28,000</span>
+              <span className="text-[10px] font-bold text-emerald-600 bg-white px-2 py-0.5 rounded-md inline-block">
+                +12% MoM
+              </span>
             </div>
           </div>
         </div>
 
-        {/* 6.4 AUTOMATED LONGITUDINAL FOLLOW-UP ENGINE (INNOVATION #4) */}
+        {/* Key Insights */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div>
-              <h3 className="text-sm font-extrabold text-gov-900 flex items-center gap-2">
-                <Send className="w-4 h-4 text-teal-600" />
-                <span>Automated Follow-Up Engine</span>
-              </h3>
-              <p className="text-xs text-slate-500">Longitudinal touchpoints (1M, 3M, 6M, 12M)</p>
-            </div>
-            <span className="text-[10px] bg-slate-100 text-slate-700 font-mono px-2 py-0.5 rounded font-bold">
-              INV-04
-            </span>
-          </div>
-
-          <div className="space-y-3">
-            {selectedTrainee.followUps.map(f => (
-              <div key={f.id} className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-gov-900">{f.milestone} Check-in</span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                      f.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' :
-                      f.status === 'Scheduled' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
-                    }`}>
-                      {f.status}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
-                    Due: {f.dueDate} {f.completedDate ? `• Completed on ${f.completedDate}` : ''}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => triggerFollowup(selectedTrainee.id, f.milestone, 'WhatsApp')}
-                    className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded text-[11px] font-semibold flex items-center gap-1 transition cursor-pointer"
-                    title="Send WhatsApp Follow-up"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => triggerFollowup(selectedTrainee.id, f.milestone, 'SMS')}
-                    className="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded text-[11px] font-semibold flex items-center gap-1 transition cursor-pointer"
-                    title="Send SMS Follow-up"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="pt-2 flex items-center justify-between border-t border-slate-100 text-xs">
-            <span className="text-slate-500">Scheduled Next Check-in: <strong>12 Month Outcome Audit</strong></span>
+            <h3 className="text-xs font-black uppercase text-blue-900 tracking-wider flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-purple-600" />
+              <span>Key Insights</span>
+            </h3>
             <button 
-              onClick={() => showToast('Follow-up schedule synced with automated SMS gateway!', 'info')}
-              className="text-teal-700 hover:text-teal-900 font-bold underline"
+              onClick={() => navigate('/dashboard/trainee/roadmap')}
+              className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
             >
-              Configure Schedule →
+              <span>View Details</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
+          </div>
+
+          <div className="space-y-4 pt-1">
+            <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <div className="w-7 h-7 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                💡
+              </div>
+              <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                Training numbers increased by <strong className="text-slate-900">12%</strong> compared to last year.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                🎯
+              </div>
+              <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                Employment conversion rate improved to <strong className="text-blue-700">62.0%</strong>.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3 p-3 bg-emerald-50/70 rounded-xl border border-emerald-100">
+              <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                🏅
+              </div>
+              <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                Skill verification score ranks in the top <strong className="text-emerald-700">5%</strong> of Pune cohort candidates.
+              </p>
+            </div>
           </div>
         </div>
       </div>
