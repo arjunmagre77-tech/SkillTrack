@@ -1,83 +1,133 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { FileText, TrendingUp, CheckCircle2, Clock } from 'lucide-react';
+import { FileText, ShieldCheck, TrendingUp, Check } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { WAGE_PROGRESSION_TREND } from '../../data/mockData';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
+import { OutcomesIllustration } from '../../components/trainee/TraineeBannerIllustrations';
 
 export const TraineeOutcomesPage: React.FC = () => {
   const { selectedTrainee } = useApp();
 
-  return (
-    <div className="space-y-6 pb-12">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-gov-900 to-slate-900 text-white p-6 rounded-2xl shadow-md border border-emerald-800 flex justify-between items-center">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <FileText className="w-4 h-4 text-emerald-300" />
-            <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-widest">Individual Outcome</span>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Employment Outcomes & Wage Growth</h1>
-          <p className="text-xs text-emerald-200/80 mt-1">Longitudinal salary progression and 6-month retention metrics</p>
-        </div>
-        <div className="text-right">
-          <span className="text-[10px] text-slate-300 block">Current Salary</span>
-          <span className="text-2xl font-extrabold text-emerald-400">
-            {selectedTrainee.salary ? `₹${selectedTrainee.salary.toLocaleString()}` : 'N/A'}
-          </span>
-        </div>
-      </div>
+  // Trajectory points matching Image 3 curve
+  const wageData = [
+    { milestone: 'Starting', salary: 19000 },
+    { milestone: '6 Months', salary: 21500 },
+    { milestone: '12 Months', salary: 28000 },
+    { milestone: '18 Months', salary: 34500 },
+  ];
 
+  return (
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+      {/* Header Banner matching Image 3 */}
+      <TraineeHeaderBanner
+        tag="INDIVIDUAL OUTCOME"
+        tagIcon={<FileText className="w-4 h-4" />}
+        title="Employment Outcomes & Wage Growth"
+        subtitle="Longitudinal salary progression and 6-month retention metrics."
+        illustration={<OutcomesIllustration />}
+        rightAddon={
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-[#DBEAFE] px-5 py-3 shadow-xs text-right">
+            <span className="text-[11px] font-semibold text-[#64748B] block">
+              Current Salary
+            </span>
+            <span className="text-2xl font-black text-[#059669] tracking-tight block">
+              ₹{selectedTrainee.salary?.toLocaleString() || '28,000'}
+            </span>
+          </div>
+        }
+      />
+
+      {/* Main 2-Column Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Retention & Outcome Summary */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <h2 className="text-sm font-extrabold text-gov-900 border-b border-slate-100 pb-3">
-            Sustained Outcome Status
+        {/* Left: Sustained Outcome Status */}
+        <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-[#0F172A] flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-[#10B981]" />
+            <span>Sustained Outcome Status</span>
           </h2>
-          <div className="space-y-3 text-xs">
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex justify-between items-center">
-              <span className="font-bold text-emerald-900">Employment Status:</span>
-              <span className="font-extrabold text-emerald-700 text-sm">{selectedTrainee.employmentStatus}</span>
-            </div>
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center">
-              <span className="font-semibold text-slate-700">6-Month Retention Check:</span>
-              <span className={`font-bold flex items-center gap-1 ${selectedTrainee.retention6Month ? 'text-emerald-600' : 'text-amber-600'}`}>
-                {selectedTrainee.retention6Month ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
-                {selectedTrainee.retention6Month ? 'Sustained ✓' : 'Pending Audit'}
+
+          <div className="space-y-3">
+            {/* Row 1: Employment Status */}
+            <div className="p-4 bg-[#ECFDF5] border border-[#D1FAE5] rounded-xl flex items-center justify-between">
+              <span className="text-xs font-bold text-[#0F172A]">Employment Status:</span>
+              <span className="bg-[#10B981] text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-xs">
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                <span>Employed</span>
               </span>
             </div>
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center">
-              <span className="font-semibold text-slate-700">Employer Name:</span>
-              <span className="font-bold text-slate-900">{selectedTrainee.employerName || 'Unassigned'}</span>
+
+            {/* Row 2: 6-Month Retention Check */}
+            <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+              <span className="text-xs font-semibold text-[#475569]">6-Month Retention Check:</span>
+              <span className="bg-[#10B981] text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-xs">
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                <span>Sustained</span>
+              </span>
             </div>
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center">
-              <span className="font-semibold text-slate-700">Employment Start Date:</span>
-              <span className="font-bold text-slate-900">{selectedTrainee.employmentStartDate || 'N/A'}</span>
+
+            {/* Row 3: Employer Name */}
+            <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+              <span className="text-xs font-semibold text-[#475569]">Employer Name:</span>
+              <span className="text-xs font-bold text-[#0F172A]">
+                {selectedTrainee.employerName || 'XYZ Technologies Pvt Ltd'}
+              </span>
+            </div>
+
+            {/* Row 4: Employment Start Date */}
+            <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+              <span className="text-xs font-semibold text-[#475569]">Employment Start Date:</span>
+              <span className="text-xs font-bold text-[#0F172A]">
+                {selectedTrainee.employmentStartDate || '12 April 2026'}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Wage Progression Curve */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h2 className="text-sm font-extrabold text-gov-900 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-emerald-600" />
-              <span>Wage Trajectory & Retention Curve</span>
-            </h2>
-          </div>
-          <div className="h-56 w-full">
+        {/* Right: Wage Trajectory & Retention Curve */}
+        <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-[#0F172A] flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-[#1A73E8]" />
+            <span>Wage Trajectory & Retention Curve</span>
+          </h2>
+
+          <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={WAGE_PROGRESSION_TREND}>
+              <AreaChart data={wageData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
                 <defs>
-                  <linearGradient id="traineeWageGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.0}/>
+                  <linearGradient id="wageCurveGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1A73E8" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#1A73E8" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="milestone" tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 9 }} domain={[15000, 40000]} />
-                <Tooltip formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, 'Avg Benchmark']} />
-                <Area type="monotone" dataKey="avgSalary" stroke="#059669" strokeWidth={3} fillOpacity={1} fill="url(#traineeWageGrad)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+                <XAxis 
+                  dataKey="milestone" 
+                  tick={{ fontSize: 11, fill: '#64748B' }} 
+                  axisLine={{ stroke: '#E2E8F0' }}
+                  tickLine={false}
+                />
+                <YAxis 
+                  ticks={[15000, 21500, 28000, 40000]}
+                  domain={[15000, 40000]}
+                  tick={{ fontSize: 10, fill: '#64748B' }} 
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip 
+                  formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, 'Salary']}
+                  contentStyle={{ backgroundColor: '#0F172A', borderRadius: '12px', color: '#FFFFFF', border: 'none', fontSize: '12px' }}
+                  itemStyle={{ color: '#38BDF8' }}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="salary" 
+                  stroke="#1A73E8" 
+                  strokeWidth={2.5} 
+                  fillOpacity={1} 
+                  fill="url(#wageCurveGrad)" 
+                  dot={{ r: 4, fill: '#1A73E8', strokeWidth: 2, stroke: '#FFFFFF' }}
+                  activeDot={{ r: 6, fill: '#1A73E8', stroke: '#FFFFFF', strokeWidth: 2 }}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>

@@ -18,6 +18,7 @@ import { TraineeTrainingPage } from './pages/trainee/TraineeTrainingPage';
 import { TraineeJobsPage } from './pages/trainee/TraineeJobsPage';
 import { TraineeApplicationsPage } from './pages/trainee/TraineeApplicationsPage';
 import { TraineeOutcomesPage } from './pages/trainee/TraineeOutcomesPage';
+import { TraineePassportPage } from './pages/trainee/TraineePassportPage';
 import { TraineeFollowupsPage } from './pages/trainee/TraineeFollowupsPage';
 
 // Government Pages
@@ -79,7 +80,7 @@ export function App() {
                 <Route path="jobs" element={<TraineeJobsPage />} />
                 <Route path="applications" element={<TraineeApplicationsPage />} />
                 <Route path="outcomes" element={<TraineeOutcomesPage />} />
-                <Route path="passport" element={<OutcomePassportPage />} />
+                <Route path="passport" element={<TraineePassportPage />} />
                 <Route path="follow-ups" element={<TraineeFollowupsPage />} />
               </Route>
 

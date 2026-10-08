@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { User, ShieldCheck, MapPin, BookOpen, Building } from 'lucide-react';
+import { User, ShieldCheck, BookOpen, Building, CheckCircle2 } from 'lucide-react';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
 
 export const TraineeProfilePage: React.FC = () => {
   const { selectedTrainee, updateConsent } = useApp();
@@ -14,29 +15,44 @@ export const TraineeProfilePage: React.FC = () => {
     { key: 'trainingHistory' as const, label: 'Persist NSDC course completion certificate in Outcome Passport' },
   ];
 
+  const initials = selectedTrainee.name.split(' ').map(n => n[0]).join('');
+
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-900 to-slate-900 text-white p-6 rounded-2xl shadow-md border border-teal-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-teal-500/20 border-2 border-teal-400/40 text-teal-300 flex items-center justify-center font-extrabold text-2xl">
-            {selectedTrainee.name.split(' ').map(n => n[0]).join('')}
+      <TraineeHeaderBanner
+        tag="VERIFIED CANDIDATE PROFILE"
+        tagIcon={<ShieldCheck className="w-4 h-4" />}
+        title={selectedTrainee.name}
+        subtitle={`Candidate ID: ${selectedTrainee.id} • ${selectedTrainee.education} • ${selectedTrainee.district}, ${selectedTrainee.state}`}
+        rightAddon={
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 rounded-2xl bg-[#1A73E8] text-white flex items-center justify-center font-black text-xl shadow-sm">
+              {initials}
+            </div>
+            <div className="hidden sm:block text-left">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                Aadhaar & Biometric Verified
+              </span>
+              <p className="text-[11px] text-slate-500 mt-1">Status: Active Candidate</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-white">{selectedTrainee.name}</h1>
-            <p className="text-xs text-teal-200 mt-1 flex items-center gap-2">
-              <span className="font-mono text-teal-300">ID: {selectedTrainee.id}</span>
-              <span>•</span>
-              <span>{selectedTrainee.education}</span>
-              <span>•</span>
-              <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-teal-400" /> {selectedTrainee.district}, {selectedTrainee.state}</span>
-            </p>
+        }
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-36 h-28">
+              <circle cx="90" cy="60" r="46" fill="#E0F0FE" fillOpacity="0.85" />
+              <rect x="40" y="30" width="80" height="60" rx="8" fill="#FFFFFF" stroke="#1A73E8" strokeWidth="2.5" />
+              <circle cx="64" cy="52" r="12" fill="#1A73E8" />
+              <path d="M 52 74 C 52 66 76 66 76 74" fill="#1A73E8" />
+              <rect x="84" y="46" width="28" height="4" rx="2" fill="#93C5FD" />
+              <rect x="84" y="54" width="20" height="4" rx="2" fill="#93C5FD" />
+              <rect x="84" y="62" width="24" height="4" rx="2" fill="#10B981" />
+            </svg>
           </div>
-        </div>
-        <span className="text-xs font-bold bg-teal-500/30 text-teal-300 border border-teal-400/40 px-3 py-1.5 rounded-xl">
-          Aadhaar & Biometric Verified Candidate
-        </span>
-      </div>
+        }
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Card */}

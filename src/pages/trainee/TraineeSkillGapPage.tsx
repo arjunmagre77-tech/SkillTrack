@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Target, Sparkles, BookOpen, AlertCircle } from 'lucide-react';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
 
 export const TraineeSkillGapPage: React.FC = () => {
   const { selectedTrainee, showToast } = useApp();
@@ -9,22 +10,34 @@ export const TraineeSkillGapPage: React.FC = () => {
     curr.level < prev.level ? curr : prev, selectedTrainee.skills[0] || { skill: 'Power BI', level: 40 });
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-950 via-gov-900 to-slate-900 text-white p-6 rounded-2xl shadow-md border border-purple-800 flex justify-between items-center">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Target className="w-4 h-4 text-purple-300" />
-            <span className="text-[10px] font-bold text-purple-300 uppercase tracking-widest">AI Skill Intelligence</span>
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+      <TraineeHeaderBanner
+        tag="AI SKILL INTELLIGENCE"
+        tagIcon={<Target className="w-4 h-4" />}
+        title="Skill Gap Analysis & Recommendations"
+        subtitle={`Target Role Alignment: ${selectedTrainee.targetRole}`}
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-44 h-28">
+              <circle cx="110" cy="60" r="50" fill="#E0F0FE" fillOpacity="0.85" />
+              <circle cx="100" cy="58" r="32" fill="none" stroke="#1A73E8" strokeWidth="3" />
+              <circle cx="100" cy="58" r="22" fill="none" stroke="#60A5FA" strokeWidth="2" />
+              <circle cx="100" cy="58" r="12" fill="none" stroke="#93C5FD" strokeWidth="1.5" />
+              <circle cx="100" cy="58" r="5" fill="#1A73E8" />
+              <path d="M 100 26 L 100 32" stroke="#1A73E8" strokeWidth="2" strokeLinecap="round" />
+              <path d="M 100 84 L 100 90" stroke="#1A73E8" strokeWidth="2" strokeLinecap="round" />
+              <path d="M 68 58 L 74 58" stroke="#1A73E8" strokeWidth="2" strokeLinecap="round" />
+              <path d="M 126 58 L 132 58" stroke="#1A73E8" strokeWidth="2" strokeLinecap="round" />
+            </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white">Skill Gap Analysis & Recommendations</h1>
-          <p className="text-xs text-purple-200/80 mt-1">Target Role Alignment: <strong className="text-white">{selectedTrainee.targetRole}</strong></p>
-        </div>
-        <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl text-right">
-          <span className="text-[10px] text-purple-200 block">Relevance Score</span>
-          <span className="text-xl font-extrabold text-teal-300">{selectedTrainee.relevancePercentage}%</span>
-        </div>
-      </div>
+        }
+        rightAddon={
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-[#DBEAFE] px-4 py-3 shadow-xs text-right">
+            <span className="text-[11px] font-semibold text-[#64748B] block">Relevance Score</span>
+            <span className="text-2xl font-black text-[#1A73E8] tracking-tight block">{selectedTrainee.relevancePercentage}%</span>
+          </div>
+        }
+      />
 
       {/* Main Analysis Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { GraduationCap, Sparkles, CheckCircle2 } from 'lucide-react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
 
 export const TraineeSkillsPage: React.FC = () => {
   const { selectedTrainee } = useApp();
@@ -13,20 +14,34 @@ export const TraineeSkillsPage: React.FC = () => {
   }));
 
   return (
-    <div className="space-y-6 pb-12">
-      <div className="bg-gradient-to-r from-teal-900 via-gov-900 to-slate-900 text-white p-6 rounded-2xl shadow-md border border-teal-800 flex justify-between items-center">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <GraduationCap className="w-4 h-4 text-teal-300" />
-            <span className="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Candidate Competencies</span>
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+      <TraineeHeaderBanner
+        tag="CANDIDATE COMPETENCIES"
+        tagIcon={<GraduationCap className="w-4 h-4" />}
+        title="My Skills & Certified Competencies"
+        subtitle={`Verified skill levels and industry benchmark comparisons for ${selectedTrainee.name}.`}
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-44 h-28">
+              <circle cx="110" cy="60" r="50" fill="#E0F0FE" fillOpacity="0.85" />
+              <polygon points="90,20 160,48 90,76 20,48" fill="#1A73E8" />
+              <polygon points="90,20 160,48 90,48 20,48" fill="#2A7EF0" fillOpacity="0.35" />
+              <circle cx="90" cy="48" r="4" fill="#0C4A9E" />
+              <path d="M 90 50 Q 68 56 64 72" stroke="#0C4A9E" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              <rect x="60" y="72" width="8" height="12" rx="3" fill="#0C4A9E" />
+              <path d="M 62 50 L 62 68 C 62 78 118 78 118 68 L 118 50" stroke="#0F52BA" strokeWidth="2" fill="none" />
+              <rect x="78" y="78" width="24" height="5" rx="2.5" fill="#93C5FD" />
+              <rect x="82" y="86" width="16" height="5" rx="2.5" fill="#BFDBFE" />
+            </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white">My Skills & Certified Competencies</h1>
-          <p className="text-xs text-teal-200/80 mt-1">Verified skill levels and industry benchmark comparisons for {selectedTrainee.name}</p>
-        </div>
-        <span className="text-xs font-mono font-bold bg-teal-500/20 text-teal-300 border border-teal-400/30 px-3 py-1.5 rounded-xl">
-          Assessment Score: {selectedTrainee.assessmentScore}%
-        </span>
-      </div>
+        }
+        rightAddon={
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-[#DBEAFE] px-4 py-3 shadow-xs text-right">
+            <span className="text-[11px] font-semibold text-[#64748B] block">Assessment Score</span>
+            <span className="text-2xl font-black text-[#1A73E8] tracking-tight block">{selectedTrainee.assessmentScore}%</span>
+          </div>
+        }
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Skill Radar Chart */}

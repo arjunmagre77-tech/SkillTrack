@@ -16,6 +16,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { TraineeHeaderBanner } from '../components/trainee/TraineeHeaderBanner';
 
 export const TraineeDashboardPage: React.FC = () => {
   const { trainees, selectedTrainee, setSelectedTraineeId, triggerFollowup, showToast } = useApp();
@@ -31,92 +32,90 @@ export const TraineeDashboardPage: React.FC = () => {
     curr.level < prev.level ? curr : prev, selectedTrainee.skills[0] || { skill: 'Power BI', level: 40 });
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
       {/* HERO HEADER — TRAINEE DASHBOARD */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-950 via-gov-900 to-slate-900 text-white p-6 shadow-xl border border-teal-900/60">
-        <div className="absolute -right-10 -top-10 w-72 h-72 bg-teal-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -left-10 -bottom-10 w-56 h-56 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-7 h-7 rounded-lg bg-teal-500/30 border border-teal-400/40 flex items-center justify-center">
-                <User className="w-3.5 h-3.5 text-teal-300" />
-              </div>
-              <span className="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Individual Journey Tracker</span>
-            </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">Trainee Outcome Dashboard</h1>
-            <p className="text-xs text-teal-200/70 mt-0.5">
-              Longitudinal tracking • Employment retention • Wage progression beyond course completion
-            </p>
+      <TraineeHeaderBanner
+        tag="INDIVIDUAL JOURNEY TRACKER"
+        tagIcon={<User className="w-4 h-4" />}
+        title="Trainee Outcome Dashboard"
+        subtitle="Longitudinal tracking • Employment retention • Wage progression beyond course completion"
+        rightAddon={
+          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-xs border border-blue-200/80 px-3.5 py-2 rounded-xl shadow-xs">
+            <span className="text-xs font-bold text-slate-600 whitespace-nowrap">Switch Trainee:</span>
+            <select
+              value={selectedTrainee.id}
+              onChange={(e) => setSelectedTraineeId(e.target.value)}
+              className="bg-white border border-[#CBD5E1] text-[#0F172A] text-xs font-semibold rounded-lg px-2.5 py-1 shadow-2xs focus:ring-2 focus:ring-[#1A73E8] focus:outline-none"
+            >
+              {trainees.slice(0, 30).map(t => (
+                <option key={t.id} value={t.id}>
+                  {t.name} ({t.programName.split(' ')[0]}) • {t.district}
+                </option>
+              ))}
+            </select>
           </div>
-
-          {/* Trainee Selector */}
-          <div className="flex items-center gap-2 w-full md:w-auto shrink-0">
-            <label className="text-xs font-bold text-teal-300 whitespace-nowrap">Select Trainee:</label>
-            <div className="relative flex-1 md:w-72">
-              <select
-                value={selectedTrainee.id}
-                onChange={(e) => setSelectedTraineeId(e.target.value)}
-                className="w-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-semibold rounded-xl p-2.5 focus:ring-2 focus:ring-teal-400 focus:outline-none"
-              >
-                {trainees.slice(0, 30).map(t => (
-                  <option key={t.id} value={t.id} className="bg-slate-900 text-white">
-                    {t.name} ({t.programName.split(' ')[0]}) • {t.district}
-                  </option>
-                ))}
-              </select>
-            </div>
+        }
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-36 h-28">
+              <circle cx="90" cy="60" r="46" fill="#E0F0FE" fillOpacity="0.85" />
+              <path d="M 40 85 L 70 55 L 100 70 L 140 30" stroke="#1A73E8" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="40" cy="85" r="5" fill="#1A73E8" />
+              <circle cx="70" cy="55" r="5" fill="#1A73E8" />
+              <circle cx="100" cy="70" r="5" fill="#1A73E8" />
+              <circle cx="140" cy="30" r="6" fill="#10B981" />
+            </svg>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* TRAINEE IDENTITY CARD */}
-      <div className="bg-gradient-to-r from-gov-900 via-gov-800 to-slate-900 text-white p-6 rounded-2xl shadow-md border border-gov-800">
+      <div className="bg-white p-6 rounded-2xl md:rounded-3xl border border-[#E2E8F0] shadow-xs">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-teal-500/20 border-2 border-teal-400/40 text-teal-300 flex items-center justify-center font-extrabold text-2xl shadow-inner">
+            <div className="w-16 h-16 rounded-2xl bg-[#1A73E8] text-white flex items-center justify-center font-black text-2xl shadow-sm">
               {selectedTrainee.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div>
               <div className="flex items-center gap-3">
-                <h2 className="text-xl font-bold text-white">{selectedTrainee.name}</h2>
+                <h2 className="text-xl font-bold text-[#0F172A]">{selectedTrainee.name}</h2>
                 <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
-                  selectedTrainee.employmentStatus === 'Employed' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30' :
-                  selectedTrainee.employmentStatus === 'Self-Employed' ? 'bg-purple-500/20 text-purple-300 border-purple-400/30' :
-                  selectedTrainee.employmentStatus === 'Apprenticeship' ? 'bg-blue-500/20 text-blue-300 border-blue-400/30' :
-                  'bg-amber-500/20 text-amber-300 border-amber-400/30'
+                  selectedTrainee.employmentStatus === 'Employed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                  selectedTrainee.employmentStatus === 'Self-Employed' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                  selectedTrainee.employmentStatus === 'Apprenticeship' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                  'bg-amber-50 text-amber-700 border-amber-200'
                 }`}>
                   {selectedTrainee.employmentStatus}
                 </span>
               </div>
-              <p className="text-xs text-slate-300 mt-1 flex items-center gap-2">
+              <p className="text-xs text-[#64748B] mt-1 flex items-center gap-2">
                 <span>{selectedTrainee.currentRole || 'Job Seeking'}</span>
                 <span>•</span>
-                <span className="text-teal-300">{selectedTrainee.employerName || 'Open to Placement'}</span>
+                <span className="text-[#1A73E8] font-medium">{selectedTrainee.employerName || 'Open to Placement'}</span>
                 <span>•</span>
                 <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-slate-400" /> {selectedTrainee.district}, {selectedTrainee.state}</span>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 border-t lg:border-t-0 lg:border-l border-slate-700/80 pt-4 lg:pt-0 lg:pl-6 w-full lg:w-auto justify-between lg:justify-end">
+          <div className="flex items-center gap-6 border-t lg:border-t-0 lg:border-l border-slate-100 pt-4 lg:pt-0 lg:pl-6 w-full lg:w-auto justify-between lg:justify-end">
             <div className="text-center">
-              <span className="text-[11px] text-slate-400 block font-medium">Monthly Pay</span>
-              <span className="text-xl font-extrabold text-emerald-400">
+              <span className="text-[11px] text-slate-500 block font-semibold uppercase tracking-wider">Monthly Pay</span>
+              <span className="text-xl font-black text-emerald-600">
                 {selectedTrainee.salary ? `₹${selectedTrainee.salary.toLocaleString()}` : 'N/A'}
               </span>
             </div>
 
             <div className="text-center">
-              <span className="text-[11px] text-slate-400 block font-medium">Score</span>
-              <span className="text-xl font-extrabold text-blue-400">{selectedTrainee.assessmentScore}%</span>
+              <span className="text-[11px] text-slate-500 block font-semibold uppercase tracking-wider">Score</span>
+              <span className="text-xl font-black text-[#1A73E8]">{selectedTrainee.assessmentScore}%</span>
             </div>
 
             <button
               onClick={() => navigate('/dashboard/trainee/passport')}
-              className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-gov-950 font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+              className="px-4 py-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
-              <Award className="w-3.5 h-3.5" />
+              <Award className="w-4 h-4" />
               <span>Outcome Passport</span>
             </button>
           </div>

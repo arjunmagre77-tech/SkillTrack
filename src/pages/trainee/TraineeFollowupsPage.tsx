@@ -1,23 +1,35 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Send, MessageSquare } from 'lucide-react';
+import { Send, MessageSquare, Bell } from 'lucide-react';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
 
 export const TraineeFollowupsPage: React.FC = () => {
   const { selectedTrainee, triggerFollowup } = useApp();
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-rose-950 via-gov-900 to-slate-900 text-white p-6 rounded-2xl shadow-md border border-rose-800 flex justify-between items-center">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Send className="w-4 h-4 text-rose-300" />
-            <span className="text-[10px] font-bold text-rose-300 uppercase tracking-widest">Touchpoint Check-ins</span>
+      <TraineeHeaderBanner
+        tag="TOUCHPOINT CHECK-INS"
+        tagIcon={<Bell className="w-4 h-4" />}
+        title="Follow-ups & Retention Audits"
+        subtitle={`Longitudinal touchpoints (1M, 3M, 6M, 12M) scheduled for candidate ${selectedTrainee.name}.`}
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-36 h-28">
+              <circle cx="90" cy="60" r="46" fill="#E0F0FE" fillOpacity="0.85" />
+              {/* Message bubbles */}
+              <rect x="36" y="32" width="70" height="42" rx="10" fill="#1A73E8" />
+              <path d="M 50 74 L 44 82 L 60 74 Z" fill="#1A73E8" />
+              <rect x="48" y="44" width="36" height="4" rx="2" fill="#FFFFFF" />
+              <rect x="48" y="52" width="46" height="4" rx="2" fill="#93C5FD" />
+              {/* Checkmark bubble */}
+              <circle cx="118" cy="68" r="18" fill="#10B981" stroke="#FFFFFF" strokeWidth="2.5" />
+              <path d="M 111 68 L 116 73 L 125 64" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white">Follow-ups & Retention Audits</h1>
-          <p className="text-xs text-rose-200/80 mt-1">Longitudinal touchpoints (1M, 3M, 6M, 12M) scheduled for candidate {selectedTrainee.name}</p>
-        </div>
-      </div>
+        }
+      />
 
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
         <h2 className="text-sm font-extrabold text-gov-900 border-b border-slate-100 pb-3">
