@@ -1,7 +1,8 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Sparkles, Zap, Award, Layers } from 'lucide-react';
+import { GraduationCap, Zap, Layers } from 'lucide-react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
 
 export const TraineeSkillsPage: React.FC = () => {
   const { selectedTrainee } = useApp();
@@ -23,30 +24,34 @@ export const TraineeSkillsPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-12 font-sans">
-      {/* Hero Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0F2B5B] via-[#0D244D] to-[#0A1A3A] text-white p-6 shadow-xl border border-blue-900/60">
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-400/40 text-teal-300 flex items-center justify-center shadow-inner shrink-0">
-              <Award className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-white tracking-tight">My Skills & Certified Competencies</h1>
-              <p className="text-xs text-blue-200/80 mt-0.5">
-                Verified skill levels and industry benchmark comparisons for {selectedTrainee.name || 'Rahul Sharma'}
-              </p>
-            </div>
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+      <TraineeHeaderBanner
+        tag="CANDIDATE COMPETENCIES"
+        tagIcon={<GraduationCap className="w-4 h-4" />}
+        title="My Skills & Certified Competencies"
+        subtitle={`Verified skill levels and industry benchmark comparisons for ${selectedTrainee.name}.`}
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-44 h-28">
+              <circle cx="110" cy="60" r="50" fill="#E0F0FE" fillOpacity="0.85" />
+              <polygon points="90,20 160,48 90,76 20,48" fill="#1A73E8" />
+              <polygon points="90,20 160,48 90,48 20,48" fill="#2A7EF0" fillOpacity="0.35" />
+              <circle cx="90" cy="48" r="4" fill="#0C4A9E" />
+              <path d="M 90 50 Q 68 56 64 72" stroke="#0C4A9E" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              <rect x="60" y="72" width="8" height="12" rx="3" fill="#0C4A9E" />
+              <path d="M 62 50 L 62 68 C 62 78 118 78 118 68 L 118 50" stroke="#0F52BA" strokeWidth="2" fill="none" />
+              <rect x="78" y="78" width="24" height="5" rx="2.5" fill="#93C5FD" />
+              <rect x="82" y="86" width="16" height="5" rx="2.5" fill="#BFDBFE" />
+            </svg>
           </div>
-
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-inner">
-            <Sparkles className="w-4 h-4 text-teal-300" />
-            <span className="text-xs font-bold text-white">
-              Assessment Score: <strong className="text-teal-300 font-mono font-extrabold text-sm">{selectedTrainee.assessmentScore || 92}%</strong>
-            </span>
+        }
+        rightAddon={
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-[#DBEAFE] px-4 py-3 shadow-xs text-right">
+            <span className="text-[11px] font-semibold text-[#64748B] block">Assessment Score</span>
+            <span className="text-2xl font-black text-[#1A73E8] tracking-tight block">{selectedTrainee.assessmentScore}%</span>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

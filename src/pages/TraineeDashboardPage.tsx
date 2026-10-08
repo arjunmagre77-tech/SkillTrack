@@ -9,13 +9,13 @@ import {
   TrendingUp, 
   Sparkles, 
   ArrowRight, 
-  BarChart3, 
-  Layers, 
   Zap, 
   ChevronRight, 
-  FileCheck 
+  FileCheck,
+  MapPin
 } from 'lucide-react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
+import { TraineeHeaderBanner } from '../components/trainee/TraineeHeaderBanner';
 
 export const TraineeDashboardPage: React.FC = () => {
   const { trainees, selectedTrainee, setSelectedTraineeId } = useApp();
@@ -39,99 +39,93 @@ export const TraineeDashboardPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-12 font-sans">
-      {/* 1. TOP HERO HEADER - TRAINEE OUTCOME DASHBOARD */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#3B82F6] text-white p-6 shadow-xl border border-blue-400/30">
-        <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 opacity-15 pointer-events-none">
-          <BarChart3 className="w-64 h-64 text-white" />
-        </div>
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-inner">
-              <Layers className="w-6 h-6 text-white" />
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+      {/* HERO HEADER — TRAINEE DASHBOARD */}
+      <TraineeHeaderBanner
+        tag="INDIVIDUAL JOURNEY TRACKER"
+        tagIcon={<User className="w-4 h-4" />}
+        title="Trainee Outcome Dashboard"
+        subtitle="Longitudinal tracking • Employment retention • Wage progression beyond course completion"
+        rightAddon={
+          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-xs border border-blue-200/80 px-3.5 py-2 rounded-xl shadow-xs">
+            <span className="text-xs font-bold text-slate-600 whitespace-nowrap">Switch Trainee:</span>
+            <select
+              value={selectedTrainee.id}
+              onChange={(e) => setSelectedTraineeId(e.target.value)}
+              className="bg-white border border-[#CBD5E1] text-[#0F172A] text-xs font-semibold rounded-lg px-2.5 py-1 shadow-2xs focus:ring-2 focus:ring-[#1A73E8] focus:outline-none"
+            >
+              {trainees.slice(0, 30).map(t => (
+                <option key={t.id} value={t.id}>
+                  {t.name} ({t.programName.includes('Data') ? 'Advanced' : 'Standard'}) • {t.district}
+                </option>
+              ))}
+            </select>
+          </div>
+        }
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-36 h-28">
+              <circle cx="90" cy="60" r="46" fill="#E0F0FE" fillOpacity="0.85" />
+              <path d="M 40 85 L 70 55 L 100 70 L 140 30" stroke="#1A73E8" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="40" cy="85" r="5" fill="#1A73E8" />
+              <circle cx="70" cy="55" r="5" fill="#1A73E8" />
+              <circle cx="100" cy="70" r="5" fill="#1A73E8" />
+              <circle cx="140" cy="30" r="6" fill="#10B981" />
+            </svg>
+          </div>
+        }
+      />
+
+      {/* TRAINEE IDENTITY CARD */}
+      <div className="bg-white p-6 rounded-2xl md:rounded-3xl border border-[#E2E8F0] shadow-xs">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-[#1A73E8] text-white flex items-center justify-center font-black text-2xl shadow-sm">
+              {selectedTrainee.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div>
-              <h1 className="text-2xl font-black text-white tracking-tight">Trainee Outcome Dashboard</h1>
-              <p className="text-xs text-blue-100/90 mt-0.5 font-medium">
-                Longitudinal tracking • Employment retention • Wage progression beyond course completion
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-bold text-[#0F172A]">{selectedTrainee.name}</h2>
+                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
+                  selectedTrainee.employmentStatus === 'Employed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                  selectedTrainee.employmentStatus === 'Self-Employed' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                  selectedTrainee.employmentStatus === 'Apprenticeship' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                  'bg-amber-50 text-amber-700 border-amber-200'
+                }`}>
+                  {selectedTrainee.employmentStatus}
+                </span>
+              </div>
+              <p className="text-xs text-[#64748B] mt-1 flex items-center gap-2">
+                <span>{selectedTrainee.currentRole || 'Junior Data Analyst'}</span>
+                <span>•</span>
+                <span className="text-[#1A73E8] font-medium">{selectedTrainee.employerName || 'XYZ Technologies Pvt Ltd'}</span>
+                <span>•</span>
+                <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-slate-400" /> {selectedTrainee.district}, {selectedTrainee.state || 'Maharashtra'}</span>
               </p>
             </div>
           </div>
 
-          {/* Trainee Selector */}
-          <div className="flex items-center gap-2.5 bg-white/10 backdrop-blur-md border border-white/25 rounded-2xl p-1.5 pl-3 w-full md:w-auto">
-            <span className="text-xs font-semibold text-white whitespace-nowrap">Select Trainee:</span>
-            <select
-              value={selectedTrainee.id}
-              onChange={(e) => setSelectedTraineeId(e.target.value)}
-              className="bg-white text-slate-900 text-xs font-bold rounded-xl px-3 py-2 border-0 focus:ring-2 focus:ring-blue-300 focus:outline-none cursor-pointer"
-            >
-              {trainees.slice(0, 30).map(t => (
-                <option key={t.id} value={t.id}>
-                  {t.name} ({t.programName.includes('Data') ? 'Advanced' : 'Standard'}) - {t.district}
-                </option>
-              ))}
-            </select>
-            <div className="w-8 h-8 rounded-xl bg-white/20 text-white flex items-center justify-center shrink-0">
-              <BarChart3 className="w-4 h-4" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. CANDIDATE PROFILE HEADER CARD */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-extrabold text-2xl shadow-md">
-            {selectedTrainee.name.split(' ').map(n => n[0]).join('')}
-          </div>
-          <div>
-            <div className="flex items-center gap-3">
-              <h2 className="text-xl font-black text-slate-900">{selectedTrainee.name}</h2>
-              <span className="text-xs font-extrabold px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300/50">
-                {selectedTrainee.employmentStatus}
-              </span>
-            </div>
-            <p className="text-xs font-medium text-slate-500 mt-1 flex items-center gap-2">
-              <span>{selectedTrainee.currentRole || 'Junior Data Analyst'}</span>
-              <span>•</span>
-              <span className="text-slate-700 font-semibold">{selectedTrainee.employerName || 'XYZ Technologies Pvt Ltd'}</span>
-              <span>•</span>
-              <span className="text-slate-500">{selectedTrainee.district}, {selectedTrainee.state || 'Maharashtra'}</span>
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-6 border-t lg:border-t-0 lg:border-l border-slate-100 pt-4 lg:pt-0 lg:pl-6 w-full lg:w-auto justify-between lg:justify-end">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
-              💳
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 block font-semibold uppercase tracking-wider">Monthly Pay</span>
-              <span className="text-lg font-black text-slate-900">
+          <div className="flex items-center gap-6 border-t lg:border-t-0 lg:border-l border-slate-100 pt-4 lg:pt-0 lg:pl-6 w-full lg:w-auto justify-between lg:justify-end">
+            <div className="text-center">
+              <span className="text-[11px] text-slate-500 block font-semibold uppercase tracking-wider">Monthly Pay</span>
+              <span className="text-xl font-black text-emerald-600">
                 ₹{selectedTrainee.salary ? selectedTrainee.salary.toLocaleString() : '28,000'}
               </span>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full border-4 border-teal-500 text-teal-700 flex items-center justify-center font-black text-xs">
-              92%
+            <div className="text-center">
+              <span className="text-[11px] text-slate-500 block font-semibold uppercase tracking-wider">Score</span>
+              <span className="text-xl font-black text-[#1A73E8]">{selectedTrainee.assessmentScore}%</span>
             </div>
-            <div>
-              <span className="text-[10px] text-slate-400 block font-semibold uppercase tracking-wider">Score</span>
-              <span className="text-base font-black text-teal-600">{selectedTrainee.assessmentScore}%</span>
-            </div>
-          </div>
 
-          <button
-            onClick={() => navigate('/dashboard/trainee/passport')}
-            className="px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-violet-200 transition flex items-center gap-2 cursor-pointer active:scale-95"
-          >
-            <Award className="w-4 h-4" />
-            <span>Outcome Passport</span>
-          </button>
+            <button
+              onClick={() => navigate('/dashboard/trainee/passport')}
+              className="px-4 py-2 bg-[#1A73E8] hover:bg-[#1557B0] text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <Award className="w-4 h-4" />
+              <span>Outcome Passport</span>
+            </button>
+          </div>
         </div>
       </div>
 

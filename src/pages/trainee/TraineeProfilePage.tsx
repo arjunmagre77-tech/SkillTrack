@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { User, ShieldCheck, BookOpen, Briefcase, ChevronUp, ChevronDown, Check, Users, Database, MessageSquare, FileText, Award } from 'lucide-react';
+import { User, ShieldCheck, BookOpen, Briefcase, ChevronUp, ChevronDown, Check, Users, Database, MessageSquare, FileText, Award, CheckCircle2 } from 'lucide-react';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
 
 export const TraineeProfilePage: React.FC = () => {
   const { selectedTrainee, updateConsent } = useApp();
@@ -15,35 +16,44 @@ export const TraineeProfilePage: React.FC = () => {
     { key: 'trainingHistory' as const, label: 'Persist NSDC course completion certificate in Outcome Passport', icon: <Award className="w-4 h-4 text-blue-600" /> },
   ];
 
-  return (
-    <div className="space-y-6 pb-12 font-sans">
-      {/* 1. Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#3B82F6] text-white p-6 shadow-xl border border-blue-400/30">
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center font-black text-2xl shadow-inner shrink-0">
-              {selectedTrainee.name ? selectedTrainee.name.split(' ').map(n => n[0]).join('') : 'RS'}
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-white tracking-tight">{selectedTrainee.name || 'Rahul Sharma'}</h1>
-              <p className="text-xs text-blue-100/90 mt-1 flex flex-wrap items-center gap-2 font-medium">
-                <span>ID: {selectedTrainee.id || 'TRN-2026-001'}</span>
-                <span>•</span>
-                <span>{selectedTrainee.education || 'B.Sc Computer Science (2025)'}</span>
-                <span>•</span>
-                <span>{selectedTrainee.district || 'Pune'}, {selectedTrainee.state || 'Maharashtra'}</span>
-              </p>
-            </div>
-          </div>
+  const initials = selectedTrainee.name.split(' ').map(n => n[0]).join('');
 
-          <div className="bg-white/10 backdrop-blur-md border border-white/30 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-inner">
-            <ShieldCheck className="w-4 h-4 text-blue-200" />
-            <span className="text-xs font-bold text-white">
-              Aadhaar & Biometric Verified Candidate
-            </span>
+  return (
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+      {/* Header */}
+      <TraineeHeaderBanner
+        tag="VERIFIED CANDIDATE PROFILE"
+        tagIcon={<ShieldCheck className="w-4 h-4" />}
+        title={selectedTrainee.name}
+        subtitle={`Candidate ID: ${selectedTrainee.id} • ${selectedTrainee.education} • ${selectedTrainee.district}, ${selectedTrainee.state}`}
+        rightAddon={
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 rounded-2xl bg-[#1A73E8] text-white flex items-center justify-center font-black text-xl shadow-sm">
+              {initials}
+            </div>
+            <div className="hidden sm:block text-left">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                Aadhaar & Biometric Verified
+              </span>
+              <p className="text-[11px] text-slate-500 mt-1">Status: Active Candidate</p>
+            </div>
           </div>
-        </div>
-      </div>
+        }
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-36 h-28">
+              <circle cx="90" cy="60" r="46" fill="#E0F0FE" fillOpacity="0.85" />
+              <rect x="40" y="30" width="80" height="60" rx="8" fill="#FFFFFF" stroke="#1A73E8" strokeWidth="2.5" />
+              <circle cx="64" cy="52" r="12" fill="#1A73E8" />
+              <path d="M 52 74 C 52 66 76 66 76 74" fill="#1A73E8" />
+              <rect x="84" y="46" width="28" height="4" rx="2" fill="#93C5FD" />
+              <rect x="84" y="54" width="20" height="4" rx="2" fill="#93C5FD" />
+              <rect x="84" y="62" width="24" height="4" rx="2" fill="#10B981" />
+            </svg>
+          </div>
+        }
+      />
 
       {/* 2. Three Column Profile Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

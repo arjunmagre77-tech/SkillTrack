@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Target, Sparkles, BookOpen, AlertCircle, ArrowRight, Lightbulb } from 'lucide-react';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
 
 export const TraineeSkillGapPage: React.FC = () => {
   const { selectedTrainee, showToast } = useApp();
@@ -27,39 +28,34 @@ export const TraineeSkillGapPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-12 font-sans relative min-h-screen">
-      {/* Top Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#1D4ED8] via-[#2563EB] to-[#3B82F6] text-white p-6 shadow-xl border border-blue-400/30">
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-inner shrink-0">
-              <Target className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-blue-200 block">
-                AI SKILL INTELLIGENCE
-              </span>
-              <h1 className="text-2xl font-black text-white tracking-tight">
-                Skill Gap Analysis & Recommendations
-              </h1>
-              <p className="text-xs text-blue-100/90 mt-0.5">
-                Target Role Alignment: <strong className="text-white font-bold">{selectedTrainee.targetRole || 'Data Analyst'}</strong>
-              </p>
-            </div>
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+      <TraineeHeaderBanner
+        tag="AI SKILL INTELLIGENCE"
+        tagIcon={<Target className="w-4 h-4" />}
+        title="Skill Gap Analysis & Recommendations"
+        subtitle={`Target Role Alignment: ${selectedTrainee.targetRole}`}
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-44 h-28">
+              <circle cx="110" cy="60" r="50" fill="#E0F0FE" fillOpacity="0.85" />
+              <circle cx="100" cy="58" r="32" fill="none" stroke="#1A73E8" strokeWidth="3" />
+              <circle cx="100" cy="58" r="22" fill="none" stroke="#60A5FA" strokeWidth="2" />
+              <circle cx="100" cy="58" r="12" fill="none" stroke="#93C5FD" strokeWidth="1.5" />
+              <circle cx="100" cy="58" r="5" fill="#1A73E8" />
+              <path d="M 100 26 L 100 32" stroke="#1A73E8" strokeWidth="2" strokeLinecap="round" />
+              <path d="M 100 84 L 100 90" stroke="#1A73E8" strokeWidth="2" strokeLinecap="round" />
+              <path d="M 68 58 L 74 58" stroke="#1A73E8" strokeWidth="2" strokeLinecap="round" />
+              <path d="M 126 58 L 132 58" stroke="#1A73E8" strokeWidth="2" strokeLinecap="round" />
+            </svg>
           </div>
-
-          {/* Relevance Score Meter Box */}
-          <div className="bg-white text-slate-900 px-5 py-2.5 rounded-2xl flex items-center gap-3 shadow-md">
-            <div className="text-right">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Relevance Score</span>
-              <span className="text-2xl font-black text-blue-600">88%</span>
-            </div>
-            <div className="w-10 h-10 rounded-full border-4 border-blue-500 border-t-blue-200 flex items-center justify-center font-black text-xs text-blue-700">
-              88%
-            </div>
+        }
+        rightAddon={
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-[#DBEAFE] px-4 py-3 shadow-xs text-right">
+            <span className="text-[11px] font-semibold text-[#64748B] block">Relevance Score</span>
+            <span className="text-2xl font-black text-[#1A73E8] tracking-tight block">{selectedTrainee.relevancePercentage}%</span>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

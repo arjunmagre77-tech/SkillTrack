@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { CheckCircle2, ArrowRight, Compass, Calendar, MapPin, Flag, Award } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Compass, Calendar, Flag, Award, MapPin } from 'lucide-react';
+import { TraineeHeaderBanner } from '../../components/trainee/TraineeHeaderBanner';
 
 export const TraineeRoadmapPage: React.FC = () => {
   const { selectedTrainee } = useApp();
@@ -20,29 +21,37 @@ export const TraineeRoadmapPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-12 font-sans">
-      {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0F2B5B] via-[#102C5E] to-[#0A1A3A] text-white p-6 shadow-xl border border-blue-900/60">
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-400/30 text-blue-300 flex items-center justify-center shadow-inner shrink-0">
-              <Compass className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-white tracking-tight">My Career Roadmap & Milestones</h1>
-              <p className="text-xs text-blue-200/80 mt-0.5">
-                Multi-year milestone tracker from skilling to 12-month post-placement audit
-              </p>
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
+      {/* Header */}
+      <TraineeHeaderBanner
+        tag="LONGITUDINAL CAREER PATH"
+        tagIcon={<Compass className="w-4 h-4" />}
+        title="My Career Roadmap & Milestones"
+        subtitle={`Multi-year milestone tracker from skilling to 12-month post-placement audit for ${selectedTrainee.name}.`}
+        rightAddon={
+          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-xs border border-blue-200/80 px-4 py-2 rounded-xl shadow-xs">
+            <Flag className="w-4 h-4 text-[#1A73E8]" />
+            <div className="text-left">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cohort</p>
+              <p className="text-xs font-bold text-[#1A73E8]">{selectedTrainee.cohort}</p>
             </div>
           </div>
-
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-2xl flex items-center gap-2">
-            <span className="text-xs font-bold text-white">
-              Cohort: <span className="text-blue-300 font-mono font-extrabold">{selectedTrainee.cohort || '2025-Q4 Cohort A'}</span>
-            </span>
+        }
+        illustration={
+          <div className="hidden md:flex items-center justify-end shrink-0 select-none">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-44 h-28">
+              <circle cx="110" cy="60" r="50" fill="#E0F0FE" fillOpacity="0.85" />
+              {/* Roadmap path */}
+              <path d="M 30 90 Q 70 70 85 45 T 150 30" stroke="#1A73E8" strokeWidth="4" strokeDasharray="6 4" fill="none" />
+              {/* Waypoints */}
+              <circle cx="30" cy="90" r="6" fill="#10B981" stroke="#FFFFFF" strokeWidth="2" />
+              <circle cx="85" cy="45" r="7" fill="#1A73E8" stroke="#FFFFFF" strokeWidth="2" />
+              <circle cx="150" cy="30" r="9" fill="#F59E0B" stroke="#FFFFFF" strokeWidth="2.5" />
+              <path d="M 150 21 L 150 12 L 162 16.5 Z" fill="#F59E0B" />
+            </svg>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
