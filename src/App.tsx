@@ -6,6 +6,7 @@ import { TraineeDashboardLayout } from './components/layout/TraineeDashboardLayo
 import { GovernmentDashboardLayout } from './components/layout/GovernmentDashboardLayout';
 
 import { LoginPage } from './pages/LoginPage';
+import LandingPage from './pages/LandingPage';
 import { BackgroundPaths } from './components/ui/background-paths';
 
 // Trainee Pages
@@ -122,8 +123,10 @@ export function App() {
               <Route path="/consent-privacy" element={<Navigate to="/dashboard/government/consent-privacy" replace />} />
               <Route path="/settings" element={<Navigate to="/dashboard/government/settings" replace />} />
 
-              {/* Root & Fallback Redirects */}
-              <Route path="/" element={<RootRedirect />} />
+              {/* Landing Page */}
+              <Route path="/" element={<LandingPage />} />
+
+              {/* Fallback redirect for unknown routes */}
               <Route path="*" element={<RootRedirect />} />
             </Routes>
           </BrowserRouter>

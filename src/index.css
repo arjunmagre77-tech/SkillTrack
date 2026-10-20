@@ -263,3 +263,56 @@
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(37, 99, 235, 0.2);
 }
+
+/* ============================================================
+   LANDING PAGE — MARQUEE & BENTO ANIMATIONS
+   ============================================================ */
+
+@keyframes marquee-ltr {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0%);   }
+}
+
+@keyframes marquee-rtl {
+  0%   { transform: translateX(0%);   }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1;    }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes bento-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.marquee-rtl {
+  display: flex;
+  animation: marquee-rtl 32s linear infinite;
+  will-change: transform;
+}
+
+.marquee-ltr {
+  display: flex;
+  animation: marquee-ltr 36s linear infinite;
+  will-change: transform;
+}
+
+.marquee-rtl:hover,
+.marquee-ltr:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-rtl,
+  .marquee-ltr {
+    animation: none;
+  }
+}
