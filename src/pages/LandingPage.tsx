@@ -40,8 +40,8 @@ const navLinks = ['Home', 'Features', 'About', 'Dashboard', 'Contact'];
    SCROLL-CANVAS HOOK
 ───────────────────────────────────────────────────────────── */
 function useScrollCanvas(
-  canvasRef:    React.RefObject<HTMLCanvasElement>,
-  containerRef: React.RefObject<HTMLDivElement>,
+  canvasRef:    React.RefObject<HTMLCanvasElement | null>,
+  containerRef: React.RefObject<HTMLDivElement | null>,
 ) {
   const frames         = useRef<(HTMLImageElement | null)[]>(Array(TOTAL_FRAMES).fill(null));
   const currentFrame   = useRef(0);
@@ -181,7 +181,7 @@ function useScrollCanvas(
 /* ─────────────────────────────────────────────────────────────
    CANVAS COMPONENT
 ───────────────────────────────────────────────────────────── */
-const ScrollCanvas: React.FC<{ containerRef: React.RefObject<HTMLDivElement> }> = ({ containerRef }) => {
+const ScrollCanvas: React.FC<{ containerRef: React.RefObject<HTMLDivElement | null> }> = ({ containerRef }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useScrollCanvas(canvasRef, containerRef);
 
